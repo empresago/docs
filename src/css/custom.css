@@ -1,0 +1,279 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #3399FF;
+  --ifm-color-primary-dark: #2d7dd6;
+  --ifm-color-primary-darker: #2770c2;
+  --ifm-color-primary-darkest: #1f5ba0;
+  --ifm-color-primary-light: #4da6ff;
+  --ifm-color-primary-lighter: #5aadff;
+  --ifm-color-primary-lightest: #7bbfff;
+  --ifm-color-secondary: #363A40;
+  --ifm-color-secondary-dark: #2f3237;
+  --ifm-color-secondary-darker: #2b2e32;
+  --ifm-color-secondary-darkest: #23262a;
+  --ifm-color-secondary-light: #3d4147;
+  --ifm-color-secondary-lighter: #41454b;
+  --ifm-color-secondary-lightest: #4a4e55;
+  --ifm-background-color: #ffffff;
+  --ifm-background-surface-color: #f8f9fa;
+  --ifm-navbar-background-color: #363A40;
+  --ifm-navbar-link-color: #ffffff;
+  --ifm-navbar-link-hover-color: #3399FF;
+  --ifm-footer-background-color: #363A40;
+  --ifm-footer-color: #ffffff;
+  --ifm-footer-link-color: #3399FF;
+  --ifm-footer-link-hover-color: #ffffff;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #3399FF;
+  --ifm-color-primary-dark: #2d7dd6;
+  --ifm-color-primary-darker: #2770c2;
+  --ifm-color-primary-darkest: #1f5ba0;
+  --ifm-color-primary-light: #4da6ff;
+  --ifm-color-primary-lighter: #5aadff;
+  --ifm-color-primary-lightest: #7bbfff;
+  --ifm-color-secondary: #363A40;
+  --ifm-color-secondary-dark: #2f3237;
+  --ifm-color-secondary-darker: #2b2e32;
+  --ifm-color-secondary-darkest: #23262a;
+  --ifm-color-secondary-light: #3d4147;
+  --ifm-color-secondary-lighter: #41454b;
+  --ifm-color-secondary-lightest: #4a4e55;
+  --ifm-background-color: #1a1a1a;
+  --ifm-background-surface-color: #2a2a2a;
+  --ifm-navbar-background-color: #363A40;
+  --ifm-navbar-link-color: #ffffff;
+  --ifm-navbar-link-hover-color: #3399FF;
+  --ifm-footer-background-color: #363A40;
+  --ifm-footer-color: #ffffff;
+  --ifm-footer-link-color: #3399FF;
+  --ifm-footer-link-hover-color: #ffffff;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Custom styling for GoAB branding */
+.navbar__brand {
+  font-weight: 600;
+  color: #ffffff !important;
+}
+
+.navbar__brand:hover {
+  color: #3399FF !important;
+}
+
+.navbar__link {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+.navbar__link:hover {
+  color: #3399FF !important;
+}
+
+.navbar__logo {
+  height: 24px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+/* Login button styling in navbar */
+.navbar__login-btn {
+  background-color: #3399FF !important;
+  border-color: #3399FF !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.navbar__login-btn:hover {
+  background-color: #2d7dd6 !important;
+  border-color: #2d7dd6 !important;
+  color: #ffffff !important;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* Hero section styling */
+.hero__title {
+  color: #363A40;
+  font-weight: 700;
+}
+
+.hero__subtitle {
+  color: #363A40;
+  opacity: 0.8;
+}
+
+/* Button styling */
+.button--primary {
+  background-color: #3399FF;
+  border-color: #3399FF;
+}
+
+.button--primary:hover {
+  background-color: #2d7dd6;
+  border-color: #2d7dd6;
+}
+
+.button--secondary {
+  background-color: #363A40;
+  border-color: #363A40;
+  color: #ffffff;
+}
+
+.button--secondary:hover {
+  background-color: #2f3237;
+  border-color: #2f3237;
+  color: #ffffff;
+}
+
+/* Card styling */
+.card {
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(54, 58, 64, 0.1);
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(54, 58, 64, 0.15);
+  border-color: #3399FF;
+}
+
+/* Footer styling */
+.footer {
+  background-color: #363A40 !important;
+}
+
+.footer__title {
+  color: #ffffff !important;
+}
+
+.footer__link-item {
+  color: #3399FF !important;
+}
+
+.footer__link-item:hover {
+  color: #ffffff !important;
+}
+
+.footer__copyright {
+  color: #ffffff !important;
+}
+
+/* Code block styling */
+.prism-code {
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+}
+
+/* Table styling */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table th {
+  background-color: #363A40;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+table td {
+  border: 1px solid #e0e0e0;
+}
+
+table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .hero__title {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .hero__subtitle {
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+[data-theme='dark'] .card {
+  background-color: #2a2a2a;
+  border-color: #404040;
+}
+
+[data-theme='dark'] .card:hover {
+  border-color: #3399FF;
+}
+
+[data-theme='dark'] .prism-code {
+  background-color: #1a1a1a;
+  border-color: #404040;
+}
+
+[data-theme='dark'] table th {
+  background-color: #363A40;
+  color: #ffffff;
+}
+
+[data-theme='dark'] table td {
+  border-color: #404040;
+}
+
+[data-theme='dark'] table tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+
+/* Custom styling for variants image */
+.featureSvg {
+  max-width: 200px;
+  max-height: 150px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Footer customization */
+.footer__links {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin-bottom: 2rem;
+}
+
+.footer__link-item {
+  text-align: center;
+}
+
+.footer__title {
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.footer__link {
+  color: #cccccc;
+  transition: color 0.2s ease;
+}
+
+.footer__link:hover {
+  color: #3399FF;
+}
+
+.footer__copyright {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #363A40;
+}
