@@ -22,9 +22,14 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupSDK() {
-        sdk = GoABSDKFactory.create(this, config)
+        sdk = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         lifecycleScope.launch {
-            sdk.initialize(config)
+            sdk.initialize()
             applyButtonExperiment()
         }
     }
@@ -83,11 +88,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        val sdk = GoABSDKFactory.create(this, config)
+        val sdk = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         featureManager = FeatureManager(sdk)
         
         lifecycleScope.launch {
-            sdk.initialize(config)
+            sdk.initialize()
             setupFeatures()
         }
     }
@@ -143,11 +153,16 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         
-        val sdk = GoABSDKFactory.create(this, config)
+        val sdk = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         contentManager = ContentManager(sdk)
         
         lifecycleScope.launch {
-            sdk.initialize(config)
+            sdk.initialize()
             loadPersonalizedContent()
         }
     }
@@ -209,11 +224,16 @@ class ProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product)
         
-        val sdk = GoABSDKFactory.create(this, config)
+        val sdk = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         analytics = AnalyticsManager(sdk)
         
         lifecycleScope.launch {
-            sdk.initialize(config)
+            sdk.initialize()
             analytics.trackScreenView("product_detail")
         }
     }
@@ -262,12 +282,17 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        val sdk = GoABSDKFactory.create(this, config)
+        val sdk = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         configManager = AppConfigManager(sdk)
         
         // Inicializar em background
         CoroutineScope(Dispatchers.IO).launch {
-            sdk.initialize(config)
+            sdk.initialize()
             applyAppConfiguration()
         }
     }
@@ -330,11 +355,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        val sdk = GoABSDKFactory.create(this, config)
+        val sdk = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         segmentManager = UserSegmentManager(sdk)
         
         lifecycleScope.launch {
-            sdk.initialize(config)
+            sdk.initialize()
             applyUserSegmentation()
         }
     }
@@ -405,11 +435,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        val sdk = GoABSDKFactory.create(this, config)
+        val sdk = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         stateManager = ExperimentStateManager(sdk)
         
         lifecycleScope.launch {
-            sdk.initialize(config)
+            sdk.initialize()
             stateManager.refreshExperiments()
             applyExperiments()
         }
@@ -480,12 +515,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        val sdk = GoABSDKFactory.create(this, config)
+        val sdk = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         safeManager = SafeExperimentManager(sdk)
         
         lifecycleScope.launch {
             try {
-                sdk.initialize(config)
+                sdk.initialize()
                 applySafeExperiments()
             } catch (e: Exception) {
                 Log.e("MainActivity", "Erro ao inicializar SDK", e)

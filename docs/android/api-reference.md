@@ -80,20 +80,11 @@ sdk.sendEvent("purchase_completed", mapOf(
 
 #### `refreshExperiments()`
 
-Força a atualização dos experimentos do servidor.
+Força a atualização dos experimentos do servidor em background.
 
 **Exemplo:**
 ```kotlin
 sdk.refreshExperiments()
-```
-
-#### `clearCache()`
-
-Limpa o cache de experimentos.
-
-**Exemplo:**
-```kotlin
-sdk.clearCache()
 ```
 
 #### `isInitialized(): Boolean`

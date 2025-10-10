@@ -25,18 +25,15 @@ Resolução de problemas comuns ao usar o GoAB SDK.
 
 ```kotlin
 // 1. Verificar configuração
-fun validateConfig(config: GoABConfig): Boolean {
-    return config.baseUrl.isNotEmpty() &&
-           config.accountId > 0 &&
-           config.appContext?.apiToken?.isNotEmpty() == true &&
-           config.appContext?.packageName?.isNotEmpty() == true
+fun validateSDKParams(accountId: Int, apiToken: String): Boolean {
+    return accountId > 0 && apiToken.isNotEmpty()
 }
 
 // 2. Inicializar com tratamento de erro
 lifecycleScope.launch {
     try {
-        if (validateConfig(config)) {
-            sdk.initialize(config)
+        if (validateSDKParams(2, "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8")) {
+            sdk.initialize()
         } else {
             Log.e("GoAB", "Configuração inválida")
         }
@@ -58,16 +55,16 @@ lifecycleScope.launch {
 
 ```kotlin
 // 1. Aumentar timeout
-val config = GoABConfig(
-    baseUrl = "https://api.goab.com",
-    accountId = 12345,
-    timeoutSeconds = 60, // Aumentar timeout
-    appContext = appContext
+val sdk = GoABSDKFactory.create(
+    context = this,
+    accountId = 2,
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+    timeoutSeconds = 60 // Aumentar timeout
 )
 
 // 2. Inicializar em background
 lifecycleScope.launch(Dispatchers.IO) {
-    sdk.initialize(config)
+    sdk.initialize()
 }
 ```
 
@@ -97,19 +94,18 @@ fun isNetworkAvailable(context: Context): Boolean {
     return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
 }
 
-// 2. Configurar URL correta
-val config = GoABConfig(
-    baseUrl = "https://api.goab.com", // Verificar URL
-    accountId = 12345,
-    appContext = GoABConfig.AppContext(
-        apiToken = "your-valid-token" // Verificar token
-    )
+// 2. Configurar SDK corretamente
+val sdk = GoABSDKFactory.create(
+    context = this,
+    accountId = 2,
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8", // Verificar token
+    timeoutSeconds = 30
 )
 
 // 3. Tratar falhas de rede
 lifecycleScope.launch {
     try {
-        sdk.initialize(config)
+        sdk.initialize()
     } catch (e: Exception) {
         if (e is UnknownHostException || e is ConnectException) {
             Log.w("GoAB", "Problema de rede, usando cache local")
@@ -134,9 +130,11 @@ lifecycleScope.launch {
 // 1. Forçar atualização
 sdk.refreshExperiments()
 
-// 2. Limpar cache e recarregar
-sdk.clearCache()
-sdk.refreshExperiments()
+// 2. Limpar experimentos ativos e recarregar
+lifecycleScope.launch {
+    sdk.clearActiveUsers()
+    sdk.refreshExperiments()
+}
 
 // 3. Verificar se está inicializado
 if (sdk.isInitialized()) {
@@ -210,7 +208,7 @@ Log.d("GoAB", "Valor obtido: $value")
 
 // 3. Aguardar inicialização
 lifecycleScope.launch {
-    sdk.initialize(config)
+    sdk.initialize()
     
     // Aguardar um pouco para garantir que os experimentos foram carregados
     delay(1000)
@@ -234,7 +232,7 @@ lifecycleScope.launch {
 ```kotlin
 // 1. Inicializar em background
 lifecycleScope.launch(Dispatchers.IO) {
-    sdk.initialize(config)
+    sdk.initialize()
 }
 
 // 2. Usar cache local
@@ -242,11 +240,11 @@ lifecycleScope.launch(Dispatchers.IO) {
 val value = sdk.getValue("key", "default") // Usa cache se disponível
 
 // 3. Configurar timeout menor
-val config = GoABConfig(
-    baseUrl = "https://api.goab.com",
-    accountId = 12345,
-    timeoutSeconds = 10, // Timeout menor
-    appContext = appContext
+val sdk = GoABSDKFactory.create(
+    context = this,
+    accountId = 2,
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+    timeoutSeconds = 10 // Timeout menor
 )
 ```
 
@@ -260,11 +258,11 @@ val config = GoABConfig(
 **Soluções:**
 
 ```kotlin
-// 1. Limpar cache periodicamente
+// 1. Limpar experimentos ativos periodicamente
 lifecycleScope.launch {
-    // Limpar cache a cada 24 horas
+    // Limpar experimentos ativos a cada 24 horas
     delay(24 * 60 * 60 * 1000)
-    sdk.clearCache()
+    sdk.clearActiveUsers()
 }
 
 // 2. Usar valores padrão quando possível
@@ -389,25 +387,18 @@ class DebugGoABManager {
     private val sdk: GoABSDK
     
     constructor(context: Context) {
-        val config = GoABConfig(
-            baseUrl = "https://api.goab.com",
-            accountId = 12345,
-            enableLogging = true,
-            timeoutSeconds = 60,
-            appContext = GoABConfig.AppContext(
-                userId = "debug_user",
-                apiToken = "debug_token",
-                packageName = context.packageName
-            )
+        sdk = GoABSDKFactory.create(
+            context = context,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 60
         )
-        
-        sdk = GoABSDKFactory.create(context, config)
     }
     
     suspend fun initializeWithDebug() {
         try {
             Log.d("DebugGoAB", "Iniciando inicialização...")
-            sdk.initialize(config)
+            sdk.initialize()
             
             // Aguardar inicialização
             while (!sdk.isInitialized()) {

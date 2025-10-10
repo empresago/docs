@@ -19,9 +19,26 @@ Configure o GoAB SDK em sua aplicação Android em poucos minutos.
 
 ```gradle
 dependencies {
-    implementation 'io.goab:goab-sdk-clean:1.0.0'
+    implementation 'io.goab:goab-sdk:1.0.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+}
+```
+
+### Configuração do Repositório
+
+Adicione o repositório S3 do GoAB no seu `settings.gradle`:
+
+```gradle
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://devs.goab.io/android/releases/")
+        }
+    }
 }
 ```
 
@@ -30,7 +47,7 @@ dependencies {
 ```xml
 <dependency>
     <groupId>io.goab</groupId>
-    <artifactId>goab-sdk-clean</artifactId>
+    <artifactId>goab-sdk</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
@@ -51,11 +68,25 @@ import io.goab.sdk.GoABSDKFactory
 // - timezone, country, language (do sistema)
 val sdk = GoABSDKFactory.create(
     context = this,
-    accountId = 12345,
-    apiToken = "your-api-token",
+    accountId = 2,  // ID da sua conta
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",  // Seu token de API
     timeoutSeconds = 30
 )
 ```
+
+### Parâmetros Obrigatórios
+
+| Parâmetro | Tipo | Descrição | Exemplo |
+|-----------|------|-----------|---------|
+| `context` | Context | Contexto Android | `this` (Activity) |
+| `accountId` | Int | ID da sua conta no GoAB | `2` |
+| `apiToken` | String | Token de autenticação | `"app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8"` |
+
+### Parâmetros Opcionais
+
+| Parâmetro | Tipo | Padrão | Descrição |
+|-----------|------|--------|-----------|
+| `timeoutSeconds` | Int | 30 | Timeout das requisições em segundos |
 
 ## 3. Inicializar o SDK
 
@@ -76,8 +107,8 @@ class MainActivity : AppCompatActivity() {
         // Criar e inicializar SDK em uma linha
         goabSDK = GoABSDKFactory.create(
             context = this,
-            accountId = 12345,
-            apiToken = "your-api-token",
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
             timeoutSeconds = 30
         )
         
@@ -96,8 +127,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val goabSDK: GoABSDK by lazy {
         GoABSDKFactory.create(
             context = application,
-            accountId = 12345,
-            apiToken = "your-api-token",
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
             timeoutSeconds = 30
         )
     }
@@ -115,17 +146,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 ### Obter Valores
 
 ```kotlin
-// String
-val buttonText = goabSDK.getValue("button_text", "Clique Aqui")
+// String - Cores de botões
+val buttonColor = goabSDK.getValue("button_color", "#4CAF50") as String
 
-// Boolean
-val showFeature = goabSDK.getValue("show_new_feature", false)
+// String - Texto de botões
+val buttonText = goabSDK.getValue("button_text", "Clique Aqui") as String
 
-// Number
-val maxRetries = goabSDK.getValue("max_retries", 3)
+// Boolean - Mostrar/ocultar features
+val showFeature = goabSDK.getValue("show_new_feature", false) as Boolean
 
-// JSON (como String)
-val configJson = goabSDK.getValue("feature_config", "{}")
+// Number - Configurações numéricas
+val maxRetries = goabSDK.getValue("max_retries", 3) as Int
+
+// String - Cores de elementos específicos
+val footerButtonColor = goabSDK.getValue("footer_btn_color", "#4CAF50") as String
 ```
 
 ### Em Views
@@ -144,8 +178,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupSDK() {
         goabSDK = GoABSDKFactory.create(
             context = this,
-            accountId = 12345,
-            apiToken = "your-api-token",
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
             timeoutSeconds = 30
         )
         
@@ -156,14 +190,36 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupUI() {
-        // Aplicar valores dos experimentos
-        val button = findViewById<Button>(R.id.button)
-        val buttonText = goabSDK.getValue("button_text", "Clique Aqui")
-        button.text = buttonText.toString()
+        // Aplicar cores dos experimentos
+        applyButtonColors()
         
-        val showBanner = goabSDK.getValue("show_banner", true)
+        // Aplicar textos dos experimentos
+        val button = findViewById<Button>(R.id.button)
+        val buttonText = goabSDK.getValue("button_text", "Clique Aqui") as String
+        button.text = buttonText
+        
+        // Mostrar/ocultar features
+        val showBanner = goabSDK.getValue("show_banner", true) as Boolean
         findViewById<View>(R.id.banner).visibility = 
-            if (showBanner as Boolean) View.VISIBLE else View.GONE
+            if (showBanner) View.VISIBLE else View.GONE
+    }
+    
+    private fun applyButtonColors() {
+        try {
+            // Cor do botão principal
+            val buttonColor = goabSDK.getValue("button_color", "#4CAF50") as String
+            val color = Color.parseColor(buttonColor)
+            findViewById<Button>(R.id.card1Button).setBackgroundColor(color)
+            
+            // Cor do botão flutuante
+            val footerButtonColor = goabSDK.getValue("footer_btn_color", "#4CAF50") as String
+            val fabColor = Color.parseColor(footerButtonColor)
+            findViewById<FloatingActionButton>(R.id.fab).backgroundTintList = 
+                ColorStateList.valueOf(fabColor)
+                
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Erro ao aplicar cores", e)
+        }
     }
 }
 ```
@@ -174,11 +230,23 @@ class MainActivity : AppCompatActivity() {
 // Evento simples
 goabSDK.sendEvent("button_clicked")
 
-// Evento com propriedades
-goabSDK.sendEvent("purchase_completed", mapOf(
+// Evento de compra com propriedades
+goabSDK.sendEvent("purchase", mapOf(
+    "revenue" to 120,
     "product_id" to "prod_123",
-    "price" to 29.99,
     "currency" to "BRL"
+))
+
+// Evento de renderização de botão
+goabSDK.sendEvent("button_rendered", mapOf(
+    "button_id" to 1,
+    "button_type" to "primary"
+))
+
+// Evento de renderização de botão do rodapé
+goabSDK.sendEvent("button_rendered", mapOf(
+    "footer_btn_id" to 1,
+    "button_type" to "floating"
 ))
 ```
 
@@ -188,10 +256,27 @@ goabSDK.sendEvent("purchase_completed", mapOf(
 // Verificar se está inicializado
 if (goabSDK.isInitialized()) {
     // SDK pronto para uso
+    val value = goabSDK.getValue("button_color", "#4CAF50")
 }
 
 // Obter userId atual
 val currentUserId = goabSDK.getCurrentUserId()
+
+// Obter userId persistido (do SharedPreferences)
+lifecycleScope.launch {
+    val userId = goabSDK.getUserId()
+    println("User ID: $userId")
+}
+
+// Atualizar userId
+lifecycleScope.launch {
+    goabSDK.setUserId("new_user_123")
+}
+
+// Limpar experimentos ativos
+lifecycleScope.launch {
+    goabSDK.clearActiveUsers()
+}
 ```
 
 ## Próximos Passos
@@ -218,8 +303,8 @@ class MainActivity : AppCompatActivity() {
         // Configuração simplificada - o SDK preenche automaticamente as informações
         goabSDK = GoABSDKFactory.create(
             context = this,
-            accountId = 12345,
-            apiToken = "your-api-token",
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
             timeoutSeconds = 30
         )
         
@@ -230,21 +315,53 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun applyExperiments() {
-        // Aplicar experimentos
-        val buttonText = goabSDK.getValue("button_text", "Clique Aqui")
-        findViewById<Button>(R.id.button).text = buttonText.toString()
+        // Aplicar cores dos experimentos
+        try {
+            val buttonColor = goabSDK.getValue("button_color", "#4CAF50") as String
+            val color = Color.parseColor(buttonColor)
+            findViewById<Button>(R.id.card1Button).setBackgroundColor(color)
+            
+            val footerButtonColor = goabSDK.getValue("footer_btn_color", "#4CAF50") as String
+            val fabColor = Color.parseColor(footerButtonColor)
+            findViewById<FloatingActionButton>(R.id.fab).backgroundTintList = 
+                ColorStateList.valueOf(fabColor)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Erro ao aplicar cores", e)
+        }
         
-        val showBanner = goabSDK.getValue("show_banner", true)
+        // Aplicar textos dos experimentos
+        val buttonText = goabSDK.getValue("button_text", "Clique Aqui") as String
+        findViewById<Button>(R.id.button).text = buttonText
+        
+        // Mostrar/ocultar features
+        val showBanner = goabSDK.getValue("show_banner", true) as Boolean
         findViewById<View>(R.id.banner).visibility = 
-            if (showBanner as Boolean) View.VISIBLE else View.GONE
+            if (showBanner) View.VISIBLE else View.GONE
     }
     
     private fun onButtonClick() {
-        // Enviar evento
-        goabSDK.sendEvent("button_clicked", mapOf(
-            "button_id" to "main_button",
-            "timestamp" to System.currentTimeMillis()
+        // Enviar evento de compra
+        goabSDK.sendEvent("purchase", mapOf(
+            "revenue" to 120,
+            "product_id" to "prod_123"
         ))
+        
+        // Enviar evento de renderização
+        goabSDK.sendEvent("button_rendered", mapOf(
+            "button_id" to 1,
+            "button_type" to "primary"
+        ))
+    }
+    
+    private fun onUserIdUpdate(newUserId: String) {
+        lifecycleScope.launch {
+            try {
+                goabSDK.setUserId(newUserId)
+                Log.d("MainActivity", "UserId atualizado: $newUserId")
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Erro ao atualizar userId", e)
+            }
+        }
     }
 }
 ```

@@ -15,19 +15,19 @@ O SDK agora usa uma factory simplificada que preenche automaticamente as informa
 ```kotlin
 val sdk = GoABSDKFactory.create(
     context = this,           // Contexto Android
-    accountId = 12345,        // ID da conta
-    apiToken = "your-token",  // Token de API
+    accountId = 2,            // ID da conta
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",  // Token de API
     timeoutSeconds = 30       // Timeout das requisições
 )
 ```
 
 ### Parâmetros Obrigatórios
 
-| Parâmetro | Tipo | Descrição |
-|-----------|------|-----------|
-| `context` | Context | Contexto Android |
-| `accountId` | Int | ID da sua conta no GoAB |
-| `apiToken` | String | Token de autenticação |
+| Parâmetro | Tipo | Descrição | Exemplo |
+|-----------|------|-----------|---------|
+| `context` | Context | Contexto Android | `this` (Activity) |
+| `accountId` | Int | ID da sua conta no GoAB | `2` |
+| `apiToken` | String | Token de autenticação | `"app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8"` |
 
 ### Parâmetros Opcionais
 
@@ -82,8 +82,8 @@ import io.goab.sdk.GoABSDKFactory
 // Criar e configurar instância
 val sdk = GoABSDKFactory.create(
     context = this,
-    accountId = 12345,
-    apiToken = "your-api-token",
+    accountId = 2,
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
     timeoutSeconds = 30
 )
 
@@ -109,8 +109,8 @@ object GoABModule {
     ): GoABSDK {
         return GoABSDKFactory.create(
             context = context,
-            accountId = 12345,
-            apiToken = "your-api-token",
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
             timeoutSeconds = 30
         )
     }
@@ -124,8 +124,8 @@ object GoABModule {
 ```kotlin
 val sdk = GoABSDKFactory.create(
     context = this,
-    accountId = 12345,
-    apiToken = "dev-api-token",
+    accountId = 2,
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
     timeoutSeconds = 10  // Timeout menor para desenvolvimento
 )
 ```
@@ -135,8 +135,8 @@ val sdk = GoABSDKFactory.create(
 ```kotlin
 val sdk = GoABSDKFactory.create(
     context = this,
-    accountId = 12345,
-    apiToken = "prod-api-token",
+    accountId = 2,
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
     timeoutSeconds = 30  // Timeout padrão para produção
 )
 ```
@@ -146,8 +146,8 @@ val sdk = GoABSDKFactory.create(
 ```kotlin
 val sdk = GoABSDKFactory.create(
     context = this,
-    accountId = 12345,
-    apiToken = "your-api-token",
+    accountId = 2,
+    apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
     timeoutSeconds = 60  // Timeout maior para redes lentas
 )
 ```
@@ -232,12 +232,17 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupGoABSDK() {
-        val config = createConfig()
-        goabSDK = GoABSDKFactory.create(this, config)
+        // Configuração simplificada - o SDK preenche automaticamente as informações
+        goabSDK = GoABSDKFactory.create(
+            context = this,
+            accountId = 2,
+            apiToken = "app_bf8f8ffe8c9e8b5877a0028f67750633e18d293ed760454af88a66543a3f90f8",
+            timeoutSeconds = 30
+        )
         
         lifecycleScope.launch {
             try {
-                goabSDK.initialize(config)
+                goabSDK.initialize()
                 Log.d("GoAB", "SDK inicializado com sucesso")
                 applyExperiments()
             } catch (e: Exception) {
@@ -245,16 +250,6 @@ class MainActivity : AppCompatActivity() {
                 applyDefaultValues()
             }
         }
-    }
-    
-    private fun setupGoABSDK() {
-        // Configuração simplificada - o SDK preenche automaticamente as informações
-        goabSDK = GoABSDKFactory.create(
-            context = this,
-            accountId = 12345,
-            apiToken = "your-api-token",
-            timeoutSeconds = 30
-        )
     }
     
     private fun applyExperiments() {
