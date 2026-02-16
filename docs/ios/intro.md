@@ -28,15 +28,19 @@ O GoAB SDK é uma solução completa para:
 
 ```swift
 // 1. Crie uma instância do SDK
-let sdk = GoABSDKFactory.create(config: config)
+let sdk = GoABSDKFactory.create(
+    accountId: 12345,
+    apiToken: "your-api-token",
+    timeoutSeconds: 30
+)
 
 // 2. Inicialize
 Task {
-    await sdk.initialize(config: config)
+    try? await sdk.initialize()
 }
 
 // 3. Use os valores dos experimentos
-let buttonColor = sdk.getValue("button_color", defaultValue: "#FF0000")
+let buttonColor = sdk.getValue("button_color", defaultValue: "#FF0000") as? String ?? "#FF0000"
 ```
 
 ## Próximos Passos

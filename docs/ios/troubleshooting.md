@@ -4,44 +4,41 @@ sidebar_position: 6
 
 # Troubleshooting
 
-Resolução de problemas comuns ao usar o GoAB SDK.
+Resolução de problemas comuns ao usar o GoAB SDK para iOS.
 
-## Problemas de Inicialização
+## Problemas de inicialização
 
 ### SDK não inicializa
 
 **Sintomas:**
-- `isInitialized()` retorna false
-- Valores padrão são sempre retornados
-- Logs mostram erro de inicialização
+- `isInitialized()` retorna `false`
+- Sempre retorna valores padrão
+- Erro nos logs ao inicializar
 
-**Possíveis Causas:**
+**Possíveis causas:**
 1. Configuração inválida
 2. Problemas de rede
 3. Token de API inválido
-4. Contexto Android inválido
+4. URL base incorreta
 
 **Soluções:**
 
-```kotlin
-// 1. Verificar configuração
-fun validateConfig(config: GoABConfig): Boolean {
-    return config.baseUrl.isNotEmpty() &&
-           config.accountId > 0 &&
-           config.appContext?.apiToken?.isNotEmpty() == true &&
-           config.appContext?.packageName?.isNotEmpty() == true
+```swift
+// 1. Validar configuração
+func validateConfig(accountId: Int, apiToken: String) -> Bool {
+    accountId > 0 && !apiToken.isEmpty
 }
 
 // 2. Inicializar com tratamento de erro
-lifecycleScope.launch {
-    try {
-        if (validateConfig(config)) {
-            sdk.initialize(config)
+Task {
+    do {
+        if validateConfig(accountId: 12345, apiToken: "your-token") {
+            try await sdk.initialize()
         } else {
-            Log.e("GoAB", "Configuração inválida")
+            print("GoAB: Configuração inválida")
         }
-    } catch (e: Exception) {
-        Log.e("GoAB", "Erro ao inicializar", e)
+    } catch {
+        print("GoAB: Erro ao inicializar - \(error)")
         // Usar valores padrão
     }
 }
@@ -52,71 +49,70 @@ lifecycleScope.launch {
 **Sintomas:**
 - SDK demora para inicializar
 - Logs mostram timeout
-- Aplicação fica lenta
+- App parece travar
 
 **Soluções:**
 
-```kotlin
+```swift
 // 1. Aumentar timeout
-val config = GoABConfig(
-    baseUrl = "https://api.goab.com",
-    accountId = 12345,
-    timeoutSeconds = 60, // Aumentar timeout
-    appContext = appContext
+let sdk = GoABSDKFactory.create(
+    accountId: 12345,
+    apiToken: "your-api-token",
+    timeoutSeconds: 60
 )
 
 // 2. Inicializar em background
-lifecycleScope.launch(Dispatchers.IO) {
-    sdk.initialize(config)
+Task.detached(priority: .utility) {
+    try? await sdk.initialize()
 }
 ```
 
-## Problemas de Rede
+## Problemas de rede
 
 ### Falha ao buscar experimentos
 
 **Sintomas:**
-- Valores padrão são sempre retornados
-- Logs mostram erro de rede
-- Experimentos não são atualizados
+- Sempre retorna valores padrão
+- Erro de rede nos logs
+- Experimentos não atualizam
 
-**Possíveis Causas:**
-1. Sem conexão com internet
+**Possíveis causas:**
+1. Sem conexão
 2. URL da API incorreta
-3. Token de API inválido
-4. Firewall bloqueando requisições
+3. Token inválido
+4. Firewall ou proxy bloqueando
 
 **Soluções:**
 
-```kotlin
-// 1. Verificar conectividade
-fun isNetworkAvailable(context: Context): Boolean {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val network = connectivityManager.activeNetwork
-    val capabilities = connectivityManager.getNetworkCapabilities(network)
-    return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
-}
+```swift
+// 1. Verificar conectividade (exemplo com Network framework)
+import Network
 
-// 2. Configurar URL correta
-val config = GoABConfig(
-    baseUrl = "https://api.goab.com", // Verificar URL
-    accountId = 12345,
-    appContext = GoABConfig.AppContext(
-        apiToken = "your-valid-token" // Verificar token
-    )
+let monitor = NWPathMonitor()
+monitor.pathUpdateHandler = { path in
+    if path.status == .satisfied {
+        Task { try? await sdk.initialize() }
+    } else {
+        print("GoAB: Sem conexão - usando cache local")
+    }
+}
+monitor.start(queue: DispatchQueue.global())
+
+// 2. Usar URL correta e token válido
+let sdk = GoABSDKFactory.create(
+    accountId: 12345,
+    apiToken: "your-valid-token",
+    timeoutSeconds: 30
 )
 
 // 3. Tratar falhas de rede
-lifecycleScope.launch {
-    try {
-        sdk.initialize(config)
-    } catch (e: Exception) {
-        if (e is UnknownHostException || e is ConnectException) {
-            Log.w("GoAB", "Problema de rede, usando cache local")
-            // Usar valores do cache local
-        } else {
-            Log.e("GoAB", "Erro inesperado", e)
-        }
+Task {
+    do {
+        try await sdk.initialize()
+    } catch let error as URLError where error.code == .notConnectedToInternet {
+        print("GoAB: Sem rede - usando cache local")
+    } catch {
+        print("GoAB: Erro - \(error)")
     }
 }
 ```
@@ -124,13 +120,13 @@ lifecycleScope.launch {
 ### Experimentos não são atualizados
 
 **Sintomas:**
-- Valores antigos são retornados
-- Mudanças no servidor não refletem na app
-- `refreshExperiments()` não funciona
+- Valores antigos
+- Mudanças no servidor não aparecem
+- `refreshExperiments()` não surte efeito
 
 **Soluções:**
 
-```kotlin
+```swift
 // 1. Forçar atualização
 sdk.refreshExperiments()
 
@@ -138,299 +134,249 @@ sdk.refreshExperiments()
 sdk.clearCache()
 sdk.refreshExperiments()
 
-// 3. Verificar se está inicializado
-if (sdk.isInitialized()) {
+// 3. Garantir que está inicializado
+if sdk.isInitialized() {
     sdk.refreshExperiments()
 } else {
-    Log.w("GoAB", "SDK não inicializado")
+    print("GoAB: SDK não inicializado")
 }
 ```
 
-## Problemas de Valores
+## Problemas de valores
 
-### Valores incorretos retornados
+### Valores incorretos ou tipo errado
 
 **Sintomas:**
-- Tipos incorretos (String em vez de Boolean)
+- Tipo errado (String em vez de Bool)
 - Valores inesperados
-- Conversão de tipos falha
+- Crash ao fazer cast
 
 **Soluções:**
 
-```kotlin
-// 1. Verificar tipo do valor
-    fun getValueSafely(key: String, defaultValue: Any): Any {
-        val value = sdk.getValue(key, defaultValue)
-        
-        // Log para debug
-        Log.d("GoAB", "Valor para $key: $value (tipo: ${value.javaClass.simpleName})")
-        
-        return value
-    }
+```swift
+// 1. Ler valor e fazer cast seguro
+func getValueSafely(key: String, defaultValue: Any) -> Any {
+    let value = sdk.getValue(key, defaultValue: defaultValue)
+    print("GoAB: \(key) = \(value) (\(type(of: value))")
+    return value
+}
 
 // 2. Converter tipos explicitamente
-fun getBooleanValue(key: String, defaultValue: Boolean): Boolean {
-    val value = sdk.getValue(key, defaultValue)
-    return when (value) {
-        is Boolean -> value
-        is String -> value.toBooleanStrictOrNull() ?: defaultValue
-        else -> defaultValue
-    }
+func getBooleanValue(key: String, defaultValue: Bool) -> Bool {
+    let value = sdk.getValue(key, defaultValue: defaultValue)
+    if let b = value as? Bool { return b }
+    if let s = value as? String { return s.lowercased() == "true" }
+    return defaultValue
 }
 
-// 3. Usar valores padrão seguros
-val buttonText = sdk.getValue("button_text", "Clique Aqui") as String
+// 3. Usar valor padrão seguro
+let buttonText = sdk.getValue("button_text", defaultValue: "Clique Aqui") as? String ?? "Clique Aqui"
 ```
 
-### Valores padrão sempre retornados
+### Sempre retorna valor padrão
 
 **Sintomas:**
-- Experimentos não funcionam
-- Valores padrão são sempre usados
-- Mudanças no servidor não refletem
+- Experimentos não aplicam
+- Sempre o default
+- Alterações no servidor não refletem
 
-**Possíveis Causas:**
+**Possíveis causas:**
 1. SDK não inicializado
-2. Chave do experimento incorreta
-3. Usuário não está no experimento
-4. Problemas de rede
+2. Chave do experimento errada
+3. Usuário fora do experimento
+4. Rede
 
 **Soluções:**
 
-```kotlin
+```swift
 // 1. Verificar inicialização
-if (!sdk.isInitialized()) {
-    Log.w("GoAB", "SDK não inicializado")
+guard sdk.isInitialized() else {
+    print("GoAB: SDK não inicializado")
     return
 }
 
-// 2. Verificar chave do experimento
-val value = sdk.getValue("button_color", "#FF0000")
-Log.d("GoAB", "Valor obtido: $value")
+// 2. Conferir chave
+let value = sdk.getValue("button_color", defaultValue: "#FF0000")
+print("GoAB: Valor obtido: \(value)")
 
-// 3. Aguardar inicialização
-lifecycleScope.launch {
-    sdk.initialize(config)
-    
-    // Aguardar um pouco para garantir que os experimentos foram carregados
-    delay(1000)
-    
-    val value = sdk.getValue("button_color", "#FF0000")
-    Log.d("GoAB", "Valor após inicialização: $value")
+// 3. Inicializar e aguardar um pouco
+Task {
+    try? await sdk.initialize()
+    try? await Task.sleep(nanoseconds: 1_000_000_000) // 1s
+    let value = sdk.getValue("button_color", defaultValue: "#FF0000")
+    print("GoAB: Após init: \(value)")
 }
 ```
 
-## Problemas de Performance
+## Problemas de performance
 
 ### SDK lento
 
 **Sintomas:**
-- Aplicação fica lenta
-- UI trava durante inicialização
+- App lento
+- UI trava na inicialização
 - Timeout em operações
 
 **Soluções:**
 
-```kotlin
+```swift
 // 1. Inicializar em background
-lifecycleScope.launch(Dispatchers.IO) {
-    sdk.initialize(config)
+Task.detached(priority: .utility) {
+    try? await sdk.initialize()
 }
 
-// 2. Usar cache local
-// O SDK já usa cache local, mas você pode forçar o uso
-val value = sdk.getValue("key", "default") // Usa cache se disponível
+// 2. getValue usa cache quando disponível
+let value = sdk.getValue("key", defaultValue: "default")
 
-// 3. Configurar timeout menor
-val config = GoABConfig(
-    baseUrl = "https://api.goab.com",
-    accountId = 12345,
-    timeoutSeconds = 10, // Timeout menor
-    appContext = appContext
+// 3. Timeout menor em dev
+let sdk = GoABSDKFactory.create(
+    accountId: 12345,
+    apiToken: "your-api-token",
+    timeoutSeconds: 10
 )
 ```
 
-### Memória alta
+### Uso alto de memória
 
 **Sintomas:**
-- Aplicação consome muita memória
-- OutOfMemoryError
-- Performance degradada
+- App consome muita memória
+- Possível warning de memória
+- Performance pior
 
 **Soluções:**
 
-```kotlin
+```swift
 // 1. Limpar cache periodicamente
-lifecycleScope.launch {
-    // Limpar cache a cada 24 horas
-    delay(24 * 60 * 60 * 1000)
+Task {
+    try? await Task.sleep(nanoseconds: 24 * 60 * 60 * 1_000_000_000) // 24h
     sdk.clearCache()
 }
 
-// 2. Usar valores padrão quando possível
-val value = sdk.getValue("key", "default")
-if (value == "default") {
-    // Usar valor padrão sem fazer mais requisições
+// 2. Evitar requisições desnecessárias
+let value = sdk.getValue("key", defaultValue: "default")
+if (value as? String) == "default" {
+    // Usar default sem novas chamadas
 }
 ```
 
-## Problemas de Usuário
+## Problemas de usuário
 
-### Mudança de usuário não funciona
+### setUserId não atualiza experimentos
 
 **Sintomas:**
-- `setUserId()` não atualiza experimentos
-- Valores antigos são mantidos
-- Usuário não muda
+- `setUserId` não muda experimentos
+- Valores antigos permanecem
+- Usuário parece não mudar
 
 **Soluções:**
 
-```kotlin
+```swift
 // 1. Verificar se SDK está inicializado
-if (!sdk.isInitialized()) {
-    Log.w("GoAB", "SDK não inicializado")
-    return
+guard sdk.isInitialized() else { return }
+
+// 2. Atualizar e aguardar
+Task {
+    await sdk.setUserId("new_user_id")
+    try? await Task.sleep(nanoseconds: 1_000_000_000)
+    let current = sdk.getCurrentUserId()
+    print("GoAB: Usuário atual: \(current ?? "nil")")
 }
 
-// 2. Aguardar atualização
-lifecycleScope.launch {
-    sdk.setUserId("new_user_id")
-    
-    // Aguardar um pouco para garantir que os experimentos foram recarregados
-    delay(1000)
-    
-    // Verificar se o usuário mudou
-    val currentUserId = sdk.getCurrentUserId()
-    Log.d("GoAB", "Usuário atual: $currentUserId")
-}
-
-// 3. Limpar experimentos ativos se necessário
-lifecycleScope.launch {
-    sdk.clearActiveUsers()
-    sdk.setUserId("new_user_id")
+// 3. Limpar e definir novo usuário
+Task {
+    await sdk.clearActiveUsers()
+    await sdk.setUserId("new_user_id")
 }
 ```
 
-### Usuário não é persistido
+### Usuário não persiste
 
 **Sintomas:**
-- Usuário é perdido ao reiniciar app
-- `getCurrentUserId()` retorna null
-- Experimentos não são carregados
+- Usuário some ao reiniciar
+- `getCurrentUserId()` retorna `nil`
+- Experimentos não carregam
 
 **Soluções:**
 
-```kotlin
-// 1. Verificar se o usuário está sendo salvo
-lifecycleScope.launch {
-    sdk.setUserId("user123")
-    
-    // Verificar se foi salvo
-    val savedUserId = sdk.getUserId()
-    Log.d("GoAB", "Usuário salvo: $savedUserId")
+```swift
+// 1. Garantir que o usuário foi salvo
+Task {
+    await sdk.setUserId("user123")
+    let saved = await sdk.getUserId()
+    print("GoAB: Usuário salvo: \(saved ?? "nil")")
 }
 
-// 2. Configurar usuário na inicialização
-val config = GoABConfig(
-    baseUrl = "https://api.goab.com",
-    accountId = 12345,
-    appContext = GoABConfig.AppContext(
-        userId = "user123" // Definir usuário na configuração
-    )
+// 2. Definir userId na configuração (se o SDK suportar AppContext)
+let config = GoABConfig(
+    accountId: 12345,
+    apiToken: "your-api-token",
+    timeoutSeconds: 30,
+    appContext: AppContext(userId: "user123")
 )
 ```
 
-## Logs e Debug
+## Logs e debug
 
-### Habilitar logs detalhados
+### Ver logs no Xcode
 
-```kotlin
-val config = GoABConfig(
-    baseUrl = "https://api.goab.com",
-    accountId = 12345,
-    enableLogging = true, // Habilitar logs
-    appContext = appContext
-)
-```
-
-### Verificar logs
-
-```kotlin
-// Filtrar logs do GoAB
-adb logcat | grep "GoAB"
-```
+- Use **Console** (View → Debug Area → Activate Console).
+- Filtre por "GoAB" ou pelo nome do seu app.
 
 ### Debug de valores
 
-```kotlin
-suspend fun debugExperimentValues() {
-    val keys = listOf("button_color", "show_banner", "max_retries")
-    
-    keys.forEach { key ->
-        val value = sdk.getValue(key, null)
-        Log.d("GoAB", "Chave: $key, Valor: $value, Tipo: ${value?.javaClass?.simpleName}")
+```swift
+func debugExperimentValues() {
+    let keys = ["button_color", "show_banner", "max_retries"]
+    for key in keys {
+        let value = sdk.getValue(key, defaultValue: NSNull())
+        print("GoAB: \(key) = \(value) (\(type(of: value)))")
     }
 }
 ```
 
-## Contato e Suporte
+## Exemplo de configuração para debug
 
-Se você ainda está enfrentando problemas:
-
-1. Verifique os logs do Android
-2. Teste com uma configuração mínima
-3. Verifique a conectividade de rede
-4. Entre em contato com o suporte técnico
-
-## Exemplo de Configuração de Debug
-
-```kotlin
+```swift
 class DebugGoABManager {
-    private val sdk: GoABSDK
+    let sdk: GoABSDK
     
-    constructor(context: Context) {
-        val config = GoABConfig(
-            baseUrl = "https://api.goab.com",
-            accountId = 12345,
-            enableLogging = true,
-            timeoutSeconds = 60,
-            appContext = GoABConfig.AppContext(
-                userId = "debug_user",
-                apiToken = "debug_token",
-                packageName = context.packageName
-            )
+    init() {
+        sdk = GoABSDKFactory.create(
+            accountId: 12345,
+            apiToken: "debug-token",
+            timeoutSeconds: 60
         )
-        
-        sdk = GoABSDKFactory.create(context, config)
     }
     
-    suspend fun initializeWithDebug() {
-        try {
-            Log.d("DebugGoAB", "Iniciando inicialização...")
-            sdk.initialize(config)
-            
-            // Aguardar inicialização
-            while (!sdk.isInitialized()) {
-                delay(100)
+    func initializeWithDebug() async {
+        print("DebugGoAB: Iniciando inicialização...")
+        do {
+            try await sdk.initialize()
+            while !sdk.isInitialized() {
+                try? await Task.sleep(nanoseconds: 100_000_000)
             }
-            
-            Log.d("DebugGoAB", "SDK inicializado com sucesso")
-            
-            // Testar valores
+            print("DebugGoAB: SDK inicializado")
             testExperimentValues()
-            
-        } catch (e: Exception) {
-            Log.e("DebugGoAB", "Erro na inicialização", e)
+        } catch {
+            print("DebugGoAB: Erro - \(error)")
         }
     }
     
-    private suspend fun testExperimentValues() {
-        val testKeys = listOf("test_key_1", "test_key_2", "test_key_3")
-        
-        testKeys.forEach { key ->
-            val value = sdk.getValue(key, "default_value")
-            Log.d("DebugGoAB", "Teste - Chave: $key, Valor: $value")
+    private func testExperimentValues() {
+        let keys = ["test_key_1", "test_key_2", "test_key_3"]
+        for key in keys {
+            let value = sdk.getValue(key, defaultValue: "default_value")
+            print("DebugGoAB: \(key) = \(value)")
         }
     }
 }
 ```
+
+## Contato e suporte
+
+Se o problema continuar:
+
+1. Confira os logs no Xcode
+2. Teste com configuração mínima (accountId, apiToken)
+3. Verifique rede e URL da API
+4. Entre em contato com o suporte técnico

@@ -330,7 +330,6 @@ lifecycleScope.launch {
 
 // 2. Configurar usuário na inicialização
 val config = GoABConfig(
-    baseUrl = "https://api.goab.com",
     accountId = 12345,
     appContext = GoABConfig.AppContext(
         userId = "user123" // Definir usuário na configuração
@@ -344,7 +343,6 @@ val config = GoABConfig(
 
 ```kotlin
 val config = GoABConfig(
-    baseUrl = "https://api.goab.com",
     accountId = 12345,
     enableLogging = true, // Habilitar logs
     appContext = appContext

@@ -4,247 +4,274 @@ sidebar_position: 2
 
 # Guia de Início Rápido
 
-Configure o GoAB SDK em sua aplicação Android em poucos minutos.
+Configure o GoAB SDK em sua aplicação iOS em poucos minutos.
 
 ## Pré-requisitos
 
-- Android Studio Arctic Fox ou superior
-- Android API 21+ (Android 5.0)
-- Kotlin 1.8+
-- Coroutines
+- Xcode 14+
+- iOS 13+
+- Swift 5.7+
 
-## 1. Adicionar Dependências
+## 1. Adicionar o SDK
 
-### Gradle (app/build.gradle)
+O pacote iOS do GoAB está disponível no GitHub: [empresago/goab-ios-release](https://github.com/empresago/goab-ios-release).
 
-```gradle
-dependencies {
-    implementation 'io.goab:goab-sdk-clean:1.0.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
-}
+### Swift Package Manager (recomendado)
+
+1. No Xcode: **File → Add Package Dependencies...**
+2. Cole a URL do repositório:
+   ```
+   https://github.com/empresago/goab-ios-release
+   ```
+3. Selecione a regra de dependência (ex.: **Up to Next Major Version**) e a versão desejada.
+4. Adicione o produto **GoABSDK** ao target do seu app.
+
+Se o seu projeto usa `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/empresago/goab-ios-release", from: "1.0.0")
+]
 ```
 
-### Maven (pom.xml)
+### CocoaPods
 
-```xml
-<dependency>
-    <groupId>io.goab</groupId>
-    <artifactId>goab-sdk-clean</artifactId>
-    <version>1.0.0</version>
-</dependency>
+No `Podfile`, use o repositório no GitHub:
+
+```ruby
+pod 'GoABSDK', :git => 'https://github.com/empresago/goab-ios-release.git'
 ```
 
-## 2. Configuração Simplificada
+Ou, se o pacote estiver publicado no CocoaPods trunk:
 
-### Configuração Automática
+```ruby
+pod 'GoABSDK', '~> 1.0'
+```
 
-O SDK agora preenche automaticamente as informações do dispositivo e aplicação. Você só precisa fornecer os parâmetros essenciais:
+Depois execute:
 
-```kotlin
-import io.goab.sdk.GoABSDKFactory
+```bash
+pod install
+```
+
+## 2. Configuração simplificada
+
+O SDK preenche automaticamente as informações do dispositivo e do app. Você só precisa dos parâmetros essenciais:
+
+```swift
+import GoABSDK
 
 // Configuração simplificada - o SDK preenche automaticamente:
-// - packageName, packageVersion (da aplicação)
+// - bundleIdentifier, appVersion (do app)
 // - deviceId, deviceModel, osVersion (do dispositivo)
-// - screenResolution, networkType (do sistema)
 // - timezone, country, language (do sistema)
-val sdk = GoABSDKFactory.create(
-    context = this,
-    accountId = 12345,
-    apiToken = "your-api-token",
-    timeoutSeconds = 30
+let sdk = GoABSDKFactory.create(
+    accountId: 12345,
+    apiToken: "your-api-token",
+    timeoutSeconds: 30
 )
 ```
 
 ## 3. Inicializar o SDK
 
-### Na sua Activity/Fragment
+### Em SwiftUI
 
-```kotlin
-import io.goab.sdk.GoABSDKFactory
-import io.goab.sdk.GoABSDK
-import kotlinx.coroutines.launch
+```swift
+import SwiftUI
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var goabSDK: GoABSDK
+@main
+struct MyApp: App {
+    @StateObject private var appState = AppState()
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
-        // Criar e inicializar SDK em uma linha
-        goabSDK = GoABSDKFactory.create(
-            context = this,
-            accountId = 12345,
-            apiToken = "your-api-token",
-            timeoutSeconds = 30
-        )
-        
-        // Inicializar em background
-        lifecycleScope.launch {
-            goabSDK.initialize()
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appState)
+                .task { await appState.initializeSDK() }
         }
+    }
+}
+
+class AppState: ObservableObject {
+    let sdk = GoABSDKFactory.create(
+        accountId: 12345,
+        apiToken: "your-api-token",
+        timeoutSeconds: 30
+    )
+    
+    func initializeSDK() async {
+        try? await sdk.initialize()
     }
 }
 ```
 
-### Usando ViewModel (Recomendado)
+### Em UIKit
 
-```kotlin
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val goabSDK: GoABSDK by lazy {
-        GoABSDKFactory.create(
-            context = application,
-            accountId = 12345,
-            apiToken = "your-api-token",
-            timeoutSeconds = 30
-        )
+```swift
+import UIKit
+
+class MainViewController: UIViewController {
+    private let sdk = GoABSDKFactory.create(
+        accountId: 12345,
+        apiToken: "your-api-token",
+        timeoutSeconds: 30
+    )
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        Task {
+            try? await sdk.initialize()
+            await MainActor.run { setupUI() }
+        }
     }
     
-    init {
-        viewModelScope.launch {
-            goabSDK.initialize()
-        }
+    private func setupUI() {
+        // Configurar UI após inicialização
     }
 }
 ```
 
-## 4. Usar Valores dos Experimentos
+## 4. Usar valores dos experimentos
 
-### Obter Valores
+### Obter valores
 
-```kotlin
+```swift
 // String
-val buttonText = goabSDK.getValue("button_text", "Clique Aqui")
+let buttonText = sdk.getValue("button_text", defaultValue: "Clique Aqui") as? String ?? "Clique Aqui"
 
-// Boolean
-val showFeature = goabSDK.getValue("show_new_feature", false)
+// Bool
+let showFeature = sdk.getValue("show_new_feature", defaultValue: false) as? Bool ?? false
 
-// Number
-val maxRetries = goabSDK.getValue("max_retries", 3)
+// Int
+let maxRetries = sdk.getValue("max_retries", defaultValue: 3) as? Int ?? 3
 
 // JSON (como String)
-val configJson = goabSDK.getValue("feature_config", "{}")
+let configJson = sdk.getValue("feature_config", defaultValue: "{}") as? String ?? "{}"
 ```
 
-### Em Views
+### Em SwiftUI
 
-```kotlin
-class MainActivity : AppCompatActivity() {
-    private lateinit var goabSDK: GoABSDK
+```swift
+struct ContentView: View {
+    @EnvironmentObject var appState: AppState
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
-        setupSDK()
-    }
-    
-    private fun setupSDK() {
-        goabSDK = GoABSDKFactory.create(
-            context = this,
-            accountId = 12345,
-            apiToken = "your-api-token",
-            timeoutSeconds = 30
-        )
-        
-        lifecycleScope.launch {
-            goabSDK.initialize()
-            setupUI() // Configurar UI após inicialização
+    var body: some View {
+        VStack {
+            Text(appState.buttonText)
+            if appState.showBanner {
+                BannerView()
+            }
+        }
+        .onTapGesture {
+            appState.sdk.sendEvent("button_clicked", props: ["button_id": "main"])
         }
     }
-    
-    private fun setupUI() {
-        // Aplicar valores dos experimentos
-        val button = findViewById<Button>(R.id.button)
-        val buttonText = goabSDK.getValue("button_text", "Clique Aqui")
-        button.text = buttonText.toString()
-        
-        val showBanner = goabSDK.getValue("show_banner", true)
-        findViewById<View>(R.id.banner).visibility = 
-            if (showBanner as Boolean) View.VISIBLE else View.GONE
-    }
+}
+
+// No AppState, adicione:
+var buttonText: String {
+    appState.sdk.getValue("button_text", defaultValue: "Clique Aqui") as? String ?? "Clique Aqui"
+}
+var showBanner: Bool {
+    appState.sdk.getValue("show_banner", defaultValue: true) as? Bool ?? true
 }
 ```
 
-## 5. Enviar Eventos
+### Em UIKit
 
-```kotlin
-// Evento simples
-goabSDK.sendEvent("button_clicked")
-
-// Evento com propriedades
-goabSDK.sendEvent("purchase_completed", mapOf(
-    "product_id" to "prod_123",
-    "price" to 29.99,
-    "currency" to "BRL"
-))
+```swift
+private func setupUI() {
+    let buttonText = sdk.getValue("button_text", defaultValue: "Clique Aqui") as? String ?? "Clique Aqui"
+    let showBanner = sdk.getValue("show_banner", defaultValue: true) as? Bool ?? true
+    
+    button.setTitle(buttonText, for: .normal)
+    bannerView.isHidden = !showBanner
+}
 ```
 
-## 6. Verificar Status
+## 5. Enviar eventos
 
-```kotlin
+```swift
+// Evento simples
+sdk.sendEvent("button_clicked")
+
+// Evento com propriedades
+sdk.sendEvent("purchase_completed", props: [
+    "product_id": "prod_123",
+    "price": 29.99,
+    "currency": "BRL"
+])
+```
+
+## 6. Verificar status
+
+```swift
 // Verificar se está inicializado
-if (goabSDK.isInitialized()) {
+if sdk.isInitialized() {
     // SDK pronto para uso
 }
 
 // Obter userId atual
-val currentUserId = goabSDK.getCurrentUserId()
+let currentUserId = sdk.getCurrentUserId()
 ```
 
-## Próximos Passos
+## Próximos passos
 
-- [Inicialização Avançada](./initialization) - Configurações detalhadas
+- [Inicialização](./initialization) - Configurações detalhadas
 - [API Reference](./api-reference) - Todos os métodos disponíveis
 - [Casos de Uso](./use-cases) - Exemplos práticos
 - [Troubleshooting](./troubleshooting) - Resolução de problemas
 
-## Exemplo Completo
+## Exemplo completo (SwiftUI)
 
-```kotlin
-class MainActivity : AppCompatActivity() {
-    private lateinit var goabSDK: GoABSDK
+```swift
+@main
+struct MyApp: App {
+    @StateObject private var appState = AppState()
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
-        setupSDK()
-    }
-    
-    private fun setupSDK() {
-        // Configuração simplificada - o SDK preenche automaticamente as informações
-        goabSDK = GoABSDKFactory.create(
-            context = this,
-            accountId = 12345,
-            apiToken = "your-api-token",
-            timeoutSeconds = 30
-        )
-        
-        lifecycleScope.launch {
-            goabSDK.initialize()
-            applyExperiments()
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appState)
+                .task { await appState.initializeSDK() }
         }
     }
+}
+
+class AppState: ObservableObject {
+    let sdk = GoABSDKFactory.create(
+        accountId: 12345,
+        apiToken: "your-api-token",
+        timeoutSeconds: 30
+    )
     
-    private fun applyExperiments() {
-        // Aplicar experimentos
-        val buttonText = goabSDK.getValue("button_text", "Clique Aqui")
-        findViewById<Button>(R.id.button).text = buttonText.toString()
-        
-        val showBanner = goabSDK.getValue("show_banner", true)
-        findViewById<View>(R.id.banner).visibility = 
-            if (showBanner as Boolean) View.VISIBLE else View.GONE
+    func initializeSDK() async {
+        try? await sdk.initialize()
     }
     
-    private fun onButtonClick() {
-        // Enviar evento
-        goabSDK.sendEvent("button_clicked", mapOf(
-            "button_id" to "main_button",
-            "timestamp" to System.currentTimeMillis()
-        ))
+    var buttonText: String {
+        sdk.getValue("button_text", defaultValue: "Clique Aqui") as? String ?? "Clique Aqui"
+    }
+    
+    var showBanner: Bool {
+        sdk.getValue("show_banner", defaultValue: true) as? Bool ?? true
+    }
+}
+
+struct ContentView: View {
+    @EnvironmentObject var appState: AppState
+    
+    var body: some View {
+        VStack {
+            Button(appState.buttonText) {
+                appState.sdk.sendEvent("button_clicked", props: ["button_id": "main_button"])
+            }
+            if appState.showBanner {
+                Text("Banner")
+                    .padding()
+            }
+        }
     }
 }
 ```

@@ -4,517 +4,452 @@ sidebar_position: 5
 
 # Casos de Uso
 
-Exemplos práticos de como usar o GoAB SDK em diferentes cenários.
+Exemplos práticos de como usar o GoAB SDK em diferentes cenários (Swift).
 
-## 1. Teste A/B de Interface
+## 1. Teste A/B de interface
 
-### Cenário: Testar diferentes cores de botão
+### Cenário: testar diferentes cores de botão
 
-```kotlin
-class MainActivity : AppCompatActivity() {
-    private lateinit var sdk: GoABSDK
+```swift
+import UIKit
+
+class MainViewController: UIViewController {
+    private let sdk = GoABSDKFactory.create(
+        accountId: 12345,
+        apiToken: "your-api-token",
+        timeoutSeconds: 30
+    )
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
-        setupSDK()
-    }
-    
-    private fun setupSDK() {
-        sdk = GoABSDKFactory.create(this, config)
-        lifecycleScope.launch {
-            sdk.initialize(config)
-            applyButtonExperiment()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        Task {
+            try? await sdk.initialize()
+            await MainActor.run { applyButtonExperiment() }
         }
     }
     
-    private fun applyButtonExperiment() {
-        val button = findViewById<Button>(R.id.main_button)
+    private func applyButtonExperiment() {
+        let colorHex = sdk.getValue("button_color", defaultValue: "#FF0000") as? String ?? "#FF0000"
+        mainButton.backgroundColor = UIColor(hex: colorHex)
         
-        // Obter cor do experimento
-        val buttonColor = sdk.getValue("button_color", "#FF0000")
-        
-        // Aplicar cor
-        button.setBackgroundColor(Color.parseColor(buttonColor.toString()))
-        
-        // Enviar evento de visualização
-        sdk.sendEvent("button_color_experiment_viewed", mapOf(
-            "color" to buttonColor,
-            "experiment_key" to "button_color"
-        ))
+        sdk.sendEvent("button_color_experiment_viewed", props: [
+            "color": colorHex,
+            "experiment_key": "button_color"
+        ])
     }
     
-    private fun onButtonClick() {
-        // Enviar evento de clique
-        sdk.sendEvent("button_clicked", mapOf(
-            "button_id" to "main_button",
-            "experiment_key" to "button_color"
-        ))
+    @objc private func onButtonTap() {
+        sdk.sendEvent("button_clicked", props: [
+            "button_id": "main_button",
+            "experiment_key": "button_color"
+        ])
     }
 }
 ```
 
-## 2. Feature Flags
+## 2. Feature flags
 
-### Cenário: Controlar exibição de funcionalidades
+### Cenário: controlar exibição de funcionalidades
 
-```kotlin
-class FeatureManager(private val sdk: GoABSDK) {
+```swift
+class FeatureManager {
+    private let sdk: GoABSDK
     
-    fun shouldShowNewFeature(): Boolean {
-        return sdk.getValue("show_new_feature", false) as Boolean
+    init(sdk: GoABSDK) {
+        self.sdk = sdk
     }
     
-    fun getMaxRetries(): Int {
-        return sdk.getValue("max_retries", 3) as Int
+    func shouldShowNewFeature() -> Bool {
+        sdk.getValue("show_new_feature", defaultValue: false) as? Bool ?? false
     }
     
-    fun getApiEndpoint(): String {
-        return sdk.getValue("api_endpoint", "https://api.prod.com") as String
+    func getMaxRetries() -> Int {
+        sdk.getValue("max_retries", defaultValue: 3) as? Int ?? 3
+    }
+    
+    func getApiEndpoint() -> String {
+        sdk.getValue("api_endpoint", defaultValue: "https://api.prod.com") as? String ?? "https://api.prod.com"
     }
 }
 
 // Uso
-class MainActivity : AppCompatActivity() {
-    private lateinit var featureManager: FeatureManager
+class MainViewController: UIViewController {
+    private var featureManager: FeatureManager!
+    private let sdk = GoABSDKFactory.create(
+        accountId: 12345,
+        apiToken: "your-api-token",
+        timeoutSeconds: 30
+    )
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
-        val sdk = GoABSDKFactory.create(this, config)
-        featureManager = FeatureManager(sdk)
-        
-        lifecycleScope.launch {
-            sdk.initialize(config)
-            setupFeatures()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        featureManager = FeatureManager(sdk: sdk)
+        Task {
+            try? await sdk.initialize()
+            await MainActor.run { setupFeatures() }
         }
     }
     
-    private fun setupFeatures() {
-        // Controlar exibição de funcionalidade
-        val showNewFeature = featureManager.shouldShowNewFeature()
-        findViewById<View>(R.id.new_feature).visibility = 
-            if (showNewFeature) View.VISIBLE else View.GONE
+    private func setupFeatures() {
+        let showNewFeature = featureManager.shouldShowNewFeature()
+        newFeatureView.isHidden = !showNewFeature
         
-        // Configurar retry
-        val maxRetries = featureManager.getMaxRetries()
-        // Usar maxRetries na lógica de retry
-        
-        // Configurar endpoint
-        val apiEndpoint = featureManager.getApiEndpoint()
-        // Usar apiEndpoint nas chamadas de API
+        let maxRetries = featureManager.getMaxRetries()
+        let apiEndpoint = featureManager.getApiEndpoint()
+        // Usar maxRetries e apiEndpoint na lógica do app
     }
 }
 ```
 
-## 3. Personalização de Conteúdo
+## 3. Personalização de conteúdo
 
-### Cenário: Personalizar conteúdo baseado no usuário
+### Cenário: personalizar conteúdo por usuário
 
-```kotlin
-class ContentManager(private val sdk: GoABSDK) {
+```swift
+class ContentManager {
+    private let sdk: GoABSDK
     
-    fun getWelcomeMessage(): String {
-        return sdk.getValue("welcome_message", "Bem-vindo!") as String
+    init(sdk: GoABSDK) {
+        self.sdk = sdk
     }
     
-    fun getRecommendedItems(): List<String> {
-        val itemsJson = sdk.getValue("recommended_items", "[]") as String
-        return try {
-            // Parse JSON para lista
-            Gson().fromJson(itemsJson, Array<String>::class.java).toList()
-        } catch (e: Exception) {
-            emptyList()
+    func getWelcomeMessage() -> String {
+        sdk.getValue("welcome_message", defaultValue: "Bem-vindo!") as? String ?? "Bem-vindo!"
+    }
+    
+    func getRecommendedItems() -> [String] {
+        let json = sdk.getValue("recommended_items", defaultValue: "[]") as? String ?? "[]"
+        (try? JSONDecoder().decode([String].self, from: json.data(using: .utf8)!)) ?? []
+    }
+    
+    func getDiscountPercentage() -> Int {
+        sdk.getValue("discount_percentage", defaultValue: 0) as? Int ?? 0
+    }
+}
+
+// Uso em SwiftUI
+struct HomeView: View {
+    @StateObject var viewModel: HomeViewModel
+    
+    var body: some View {
+        VStack {
+            Text(viewModel.welcomeMessage)
+            List(viewModel.recommendedItems, id: \.self) { item in
+                Text(item)
+            }
+            if viewModel.discountPercentage > 0 {
+                Text("Desconto: \(viewModel.discountPercentage)%")
+            }
+        }
+        .task { await viewModel.load() }
+    }
+}
+
+class HomeViewModel: ObservableObject {
+    @Published var welcomeMessage = "Bem-vindo!"
+    @Published var recommendedItems: [String] = []
+    @Published var discountPercentage = 0
+    
+    private let sdk: GoABSDK
+    private lazy var contentManager = ContentManager(sdk: sdk)
+    
+    init(sdk: GoABSDK) {
+        self.sdk = sdk
+    }
+    
+    func load() async {
+        try? await sdk.initialize()
+        await MainActor.run {
+            welcomeMessage = contentManager.getWelcomeMessage()
+            recommendedItems = contentManager.getRecommendedItems()
+            discountPercentage = contentManager.getDiscountPercentage()
         }
     }
+}
+```
+
+## 4. Analytics e métricas
+
+### Cenário: coletar métricas de uso
+
+```swift
+class AnalyticsManager {
+    private let sdk: GoABSDK
     
-    fun getDiscountPercentage(): Int {
-        return sdk.getValue("discount_percentage", 0) as Int
+    init(sdk: GoABSDK) {
+        self.sdk = sdk
+    }
+    
+    func trackScreenView(screenName: String) {
+        sdk.sendEvent("screen_view", props: [
+            "screen_name": screenName,
+            "timestamp": Int(Date().timeIntervalSince1970 * 1000)
+        ])
+    }
+    
+    func trackUserAction(action: String, properties: [String: Any] = [:]) {
+        var props: [String: Any] = ["action": action, "timestamp": Int(Date().timeIntervalSince1970 * 1000)]
+        properties.forEach { props[$0.key] = $0.value }
+        sdk.sendEvent("user_action", props: props)
+    }
+    
+    func trackPurchase(productId: String, price: Double, currency: String) {
+        sdk.sendEvent("purchase", props: [
+            "product_id": productId,
+            "price": price,
+            "currency": currency,
+            "timestamp": Int(Date().timeIntervalSince1970 * 1000)
+        ])
     }
 }
 
 // Uso
-class HomeActivity : AppCompatActivity() {
-    private lateinit var contentManager: ContentManager
+struct ProductView: View {
+    @EnvironmentObject var analytics: AnalyticsManager
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-        
-        val sdk = GoABSDKFactory.create(this, config)
-        contentManager = ContentManager(sdk)
-        
-        lifecycleScope.launch {
-            sdk.initialize(config)
-            loadPersonalizedContent()
-        }
+    var body: some View {
+        ProductDetailView()
+            .onAppear { analytics.trackScreenView(screenName: "product_detail") }
     }
     
-    private fun loadPersonalizedContent() {
-        // Carregar mensagem personalizada
-        val welcomeMessage = contentManager.getWelcomeMessage()
-        findViewById<TextView>(R.id.welcome_text).text = welcomeMessage
-        
-        // Carregar itens recomendados
-        val recommendedItems = contentManager.getRecommendedItems()
-        setupRecommendedItems(recommendedItems)
-        
-        // Aplicar desconto
-        val discountPercentage = contentManager.getDiscountPercentage()
-        if (discountPercentage > 0) {
-            showDiscountBanner(discountPercentage)
-        }
+    func onAddToCart(productId: String, productName: String) {
+        analytics.trackUserAction("add_to_cart", properties: [
+            "product_id": productId,
+            "product_name": productName
+        ])
+    }
+    
+    func onPurchase(productId: String, price: Double) {
+        analytics.trackPurchase(productId: productId, price: price, currency: "BRL")
     }
 }
 ```
 
-## 4. Analytics e Métricas
+## 5. Configuração dinâmica
 
-### Cenário: Coletar métricas de uso
+### Cenário: configurar parâmetros da aplicação
 
-```kotlin
-class AnalyticsManager(private val sdk: GoABSDK) {
+```swift
+class AppConfigManager {
+    private let sdk: GoABSDK
     
-    fun trackScreenView(screenName: String) {
-        sdk.sendEvent("screen_view", mapOf(
-            "screen_name" to screenName,
-            "timestamp" to System.currentTimeMillis()
-        ))
+    init(sdk: GoABSDK) {
+        self.sdk = sdk
     }
     
-    fun trackUserAction(action: String, properties: Map<String, Any> = emptyMap()) {
-        sdk.sendEvent("user_action", mapOf(
-            "action" to action,
-            "timestamp" to System.currentTimeMillis()
-        ) + properties)
+    func getApiTimeout() -> Int {
+        sdk.getValue("api_timeout_seconds", defaultValue: 30) as? Int ?? 30
     }
     
-    fun trackPurchase(productId: String, price: Double, currency: String) {
-        sdk.sendEvent("purchase", mapOf(
-            "product_id" to productId,
-            "price" to price,
-            "currency" to currency,
-            "timestamp" to System.currentTimeMillis()
-        ))
+    func getMaxCacheSizeMB() -> Int {
+        sdk.getValue("max_cache_size_mb", defaultValue: 100) as? Int ?? 100
+    }
+    
+    func getRefreshIntervalMinutes() -> Int {
+        sdk.getValue("refresh_interval_minutes", defaultValue: 60) as? Int ?? 60
+    }
+    
+    func isDebugMode() -> Bool {
+        sdk.getValue("debug_mode", defaultValue: false) as? Bool ?? false
+    }
+}
+
+// Uso no AppDelegate ou @main
+@main
+struct MyApp: App {
+    @StateObject private var appState = AppState()
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(appState)
+                .task {
+                    try? await appState.sdk.initialize()
+                    appState.applyAppConfiguration()
+                }
+        }
+    }
+}
+
+class AppState: ObservableObject {
+    let sdk = GoABSDKFactory.create(
+        accountId: 12345,
+        apiToken: "your-api-token",
+        timeoutSeconds: 30
+    )
+    private lazy var configManager = AppConfigManager(sdk: sdk)
+    
+    func applyAppConfiguration() {
+        let apiTimeout = configManager.getApiTimeout()
+        let maxCacheSize = configManager.getMaxCacheSizeMB()
+        let refreshInterval = configManager.getRefreshIntervalMinutes()
+        let debugMode = configManager.isDebugMode()
+        // Aplicar na configuração do app
+    }
+}
+```
+
+## 6. Segmentação de usuários
+
+### Cenário: direcionar experimentos para usuários específicos
+
+```swift
+class UserSegmentManager {
+    private let sdk: GoABSDK
+    
+    init(sdk: GoABSDK) {
+        self.sdk = sdk
+    }
+    
+    func getUserSegment() -> String {
+        sdk.getValue("user_segment", defaultValue: "default") as? String ?? "default"
+    }
+    
+    func getPersonalizedContent() -> [String: Any] {
+        let json = sdk.getValue("personalized_content", defaultValue: "{}") as? String ?? "{}"
+        (try? JSONSerialization.jsonObject(with: json.data(using: .utf8)!) as? [String: Any]) ?? [:]
     }
 }
 
 // Uso
-class ProductActivity : AppCompatActivity() {
-    private lateinit var analytics: AnalyticsManager
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_product)
-        
-        val sdk = GoABSDKFactory.create(this, config)
-        analytics = AnalyticsManager(sdk)
-        
-        lifecycleScope.launch {
-            sdk.initialize(config)
-            analytics.trackScreenView("product_detail")
-        }
-    }
-    
-    private fun onAddToCart() {
-        analytics.trackUserAction("add_to_cart", mapOf(
-            "product_id" to productId,
-            "product_name" to productName
-        ))
-    }
-    
-    private fun onPurchase() {
-        analytics.trackPurchase(productId, price, "BRL")
-    }
+Task {
+    try? await sdk.initialize()
+    let segment = segmentManager.getUserSegment()
+    let content = segmentManager.getPersonalizedContent()
+    // Aplicar conteúdo
+    sdk.sendEvent("user_segmented", props: [
+        "segment": segment,
+        "user_id": sdk.getCurrentUserId() ?? ""
+    ])
 }
 ```
 
-## 5. Configuração Dinâmica
+## 7. Gerenciamento de estado
 
-### Cenário: Configurar parâmetros da aplicação
+### Cenário: sincronizar estado entre telas
 
-```kotlin
-class AppConfigManager(private val sdk: GoABSDK) {
+```swift
+class ExperimentStateManager {
+    private let sdk: GoABSDK
+    private var experimentValues: [String: Any] = [:]
     
-    fun getApiTimeout(): Int {
-        return sdk.getValue("api_timeout_seconds", 30) as Int
+    init(sdk: GoABSDK) {
+        self.sdk = sdk
     }
     
-    fun getMaxCacheSize(): Long {
-        return sdk.getValue("max_cache_size_mb", 100) as Long
-    }
-    
-    fun getRefreshInterval(): Int {
-        return sdk.getValue("refresh_interval_minutes", 60) as Int
-    }
-    
-    fun isDebugMode(): Boolean {
-        return sdk.getValue("debug_mode", false) as Boolean
-    }
-}
-
-// Uso
-class App : Application() {
-    private lateinit var configManager: AppConfigManager
-    
-    override fun onCreate() {
-        super.onCreate()
-        
-        val sdk = GoABSDKFactory.create(this, config)
-        configManager = AppConfigManager(sdk)
-        
-        // Inicializar em background
-        CoroutineScope(Dispatchers.IO).launch {
-            sdk.initialize(config)
-            applyAppConfiguration()
-        }
-    }
-    
-    private fun applyAppConfiguration() {
-        // Configurar timeout da API
-        val apiTimeout = configManager.getApiTimeout()
-        // Aplicar timeout nas chamadas de API
-        
-        // Configurar cache
-        val maxCacheSize = configManager.getMaxCacheSize()
-        // Configurar tamanho máximo do cache
-        
-        // Configurar intervalo de refresh
-        val refreshInterval = configManager.getRefreshInterval()
-        // Configurar job de refresh
-        
-        // Configurar modo debug
-        val debugMode = configManager.isDebugMode()
-        // Habilitar/desabilitar logs baseado no modo debug
-    }
-}
-```
-
-## 6. Segmentação de Usuários
-
-### Cenário: Direcionar experimentos para usuários específicos
-
-```kotlin
-class UserSegmentManager(private val sdk: GoABSDK) {
-    
-    fun getUserSegment(): String {
-        return sdk.getValue("user_segment", "default") as String
-    }
-    
-    fun getPersonalizedContent(): Map<String, Any> {
-        val contentJson = sdk.getValue("personalized_content", "{}") as String
-        return try {
-            Gson().fromJson(contentJson, Map::class.java) as Map<String, Any>
-        } catch (e: Exception) {
-            emptyMap()
-        }
-    }
-    
-    fun getTargetedOffers(): List<Map<String, Any>> {
-        val offersJson = sdk.getValue("targeted_offers", "[]") as String
-        return try {
-            Gson().fromJson(offersJson, Array<Map<String, Any>>::class.java).toList()
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-}
-
-// Uso
-class MainActivity : AppCompatActivity() {
-    private lateinit var segmentManager: UserSegmentManager
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
-        val sdk = GoABSDKFactory.create(this, config)
-        segmentManager = UserSegmentManager(sdk)
-        
-        lifecycleScope.launch {
-            sdk.initialize(config)
-            applyUserSegmentation()
-        }
-    }
-    
-    private fun applyUserSegmentation() {
-        // Obter segmento do usuário
-        val userSegment = segmentManager.getUserSegment()
-        
-        // Aplicar conteúdo personalizado
-        val personalizedContent = segmentManager.getPersonalizedContent()
-        applyPersonalizedContent(personalizedContent)
-        
-        // Aplicar ofertas direcionadas
-        val targetedOffers = segmentManager.getTargetedOffers()
-        showTargetedOffers(targetedOffers)
-        
-        // Enviar evento de segmentação
-        sdk.sendEvent("user_segmented", mapOf(
-            "segment" to userSegment,
-            "user_id" to sdk.getCurrentUserId()
-        ))
-    }
-}
-```
-
-## 7. Gerenciamento de Estado
-
-### Cenário: Sincronizar estado entre telas
-
-```kotlin
-class ExperimentStateManager(private val sdk: GoABSDK) {
-    
-    private val experimentValues = mutableMapOf<String, Any?>()
-    
-    suspend fun refreshExperiments() {
-        // Forçar atualização dos experimentos
+    func refreshExperiments() async {
         sdk.refreshExperiments()
-        
-        // Recarregar valores
         loadExperimentValues()
     }
     
-    private fun loadExperimentValues() {
-        // Carregar valores dos experimentos
-        val keys = listOf("button_color", "show_banner", "max_retries")
-        
-        keys.forEach { key ->
-            val value = sdk.getValue(key, "default_value")
-            experimentValues[key] = value
-        }
+    private func loadExperimentValues() {
+        let keys = ["button_color", "show_banner", "max_retries"]
+        experimentValues = Dictionary(uniqueKeysWithValues: keys.map { key in
+            (key, sdk.getValue(key, defaultValue: "default_value"))
+        })
     }
     
-    fun getExperimentValue(key: String, defaultValue: Any? = null): Any? {
-        return experimentValues[key] ?: defaultValue
+    func getExperimentValue(key: String, defaultValue: Any? = nil) -> Any? {
+        experimentValues[key] ?? defaultValue
     }
     
-    suspend fun clearCache() {
+    func clearCache() {
         sdk.clearCache()
-        experimentValues.clear()
+        experimentValues.removeAll()
     }
 }
 
 // Uso
-class MainActivity : AppCompatActivity() {
-    private lateinit var stateManager: ExperimentStateManager
+class MainViewController: UIViewController {
+    private let sdk = GoABSDKFactory.create(...)
+    private lazy var stateManager = ExperimentStateManager(sdk: sdk)
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
-        val sdk = GoABSDKFactory.create(this, config)
-        stateManager = ExperimentStateManager(sdk)
-        
-        lifecycleScope.launch {
-            sdk.initialize(config)
-            stateManager.refreshExperiments()
-            applyExperiments()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        Task {
+            try? await sdk.initialize()
+            await stateManager.refreshExperiments()
+            await MainActor.run { applyExperiments() }
         }
     }
     
-    private fun applyExperiments() {
-        // Aplicar experimentos usando o state manager
-        val buttonColor = stateManager.getExperimentValue("button_color", "#FF0000")
-        val showBanner = stateManager.getExperimentValue("show_banner", true)
-        
+    private func applyExperiments() {
+        let buttonColor = stateManager.getExperimentValue(key: "button_color", defaultValue: "#FF0000")
+        let showBanner = stateManager.getExperimentValue(key: "show_banner", defaultValue: true)
         // Aplicar na UI
-        findViewById<Button>(R.id.button).setBackgroundColor(
-            Color.parseColor(buttonColor.toString())
-        )
-        
-        findViewById<View>(R.id.banner).visibility = 
-            if (showBanner as Boolean) View.VISIBLE else View.GONE
     }
 }
 ```
 
-## 8. Tratamento de Erros
+## 8. Tratamento de erros
 
-### Cenário: Fallback para valores padrão
+### Cenário: fallback para valores padrão
 
-```kotlin
-class SafeExperimentManager(private val sdk: GoABSDK) {
+```swift
+class SafeExperimentManager {
+    private let sdk: GoABSDK
     
-    fun getValueSafely(key: String, defaultValue: Any): Any {
-        return try {
-            sdk.getValue(key, defaultValue)
-        } catch (e: Exception) {
-            Log.w("SafeExperimentManager", "Erro ao obter valor para $key", e)
-            defaultValue
-        }
+    init(sdk: GoABSDK) {
+        self.sdk = sdk
     }
     
-    fun getStringValue(key: String, defaultValue: String): String {
-        val value = getValueSafely(key, defaultValue)
-        return value.toString()
+    func getValueSafely(key: String, defaultValue: Any) -> Any {
+        (try? sdk.getValue(key, defaultValue: defaultValue)) ?? defaultValue
     }
     
-    fun getBooleanValue(key: String, defaultValue: Boolean): Boolean {
-        val value = getValueSafely(key, defaultValue)
-        return when (value) {
-            is Boolean -> value
-            is String -> value.toBooleanStrictOrNull() ?: defaultValue
-            else -> defaultValue
-        }
+    func getStringValue(key: String, defaultValue: String) -> String {
+        let value = getValueSafely(key: key, defaultValue: defaultValue)
+        return value as? String ?? defaultValue
     }
     
-    fun getIntValue(key: String, defaultValue: Int): Int {
-        val value = getValueSafely(key, defaultValue)
-        return when (value) {
-            is Int -> value
-            is String -> value.toIntOrNull() ?: defaultValue
-            is Double -> value.toInt()
-            else -> defaultValue
-        }
+    func getBooleanValue(key: String, defaultValue: Bool) -> Bool {
+        let value = getValueSafely(key: key, defaultValue: defaultValue)
+        if let b = value as? Bool { return b }
+        if let s = value as? String { return s.lowercased() == "true" }
+        return defaultValue
+    }
+    
+    func getIntValue(key: String, defaultValue: Int) -> Int {
+        let value = getValueSafely(key: key, defaultValue: defaultValue)
+        if let i = value as? Int { return i }
+        if let s = value as? String, let i = Int(s) { return i }
+        if let d = value as? Double { return Int(d) }
+        return defaultValue
     }
 }
 
 // Uso
-class MainActivity : AppCompatActivity() {
-    private lateinit var safeManager: SafeExperimentManager
+class MainViewController: UIViewController {
+    private let sdk = GoABSDKFactory.create(...)
+    private lazy var safeManager = SafeExperimentManager(sdk: sdk)
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        
-        val sdk = GoABSDKFactory.create(this, config)
-        safeManager = SafeExperimentManager(sdk)
-        
-        lifecycleScope.launch {
-            try {
-                sdk.initialize(config)
-                applySafeExperiments()
-            } catch (e: Exception) {
-                Log.e("MainActivity", "Erro ao inicializar SDK", e)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        Task {
+            do {
+                try await sdk.initialize()
+                await MainActor.run { applySafeExperiments() }
+            } catch {
                 applyDefaultValues()
             }
         }
     }
     
-    private fun applySafeExperiments() {
-        // Usar métodos seguros
-        val buttonText = safeManager.getStringValue("button_text", "Clique Aqui")
-        val showBanner = safeManager.getBooleanValue("show_banner", true)
-        val maxRetries = safeManager.getIntValue("max_retries", 3)
-        
-        // Aplicar valores
-        findViewById<Button>(R.id.button).text = buttonText
-        findViewById<View>(R.id.banner).visibility = 
-            if (showBanner) View.VISIBLE else View.GONE
+    private func applySafeExperiments() {
+        let buttonText = safeManager.getStringValue(key: "button_text", defaultValue: "Clique Aqui")
+        let showBanner = safeManager.getBooleanValue(key: "show_banner", defaultValue: true)
+        let maxRetries = safeManager.getIntValue(key: "max_retries", defaultValue: 3)
+        // Aplicar na UI
     }
     
-    private fun applyDefaultValues() {
-        // Valores padrão quando SDK não está disponível
-        findViewById<Button>(R.id.button).text = "Clique Aqui"
-        findViewById<View>(R.id.banner).visibility = View.GONE
+    private func applyDefaultValues() {
+        button.setTitle("Clique Aqui", for: .normal)
+        bannerView.isHidden = true
     }
 }
 ```
 
-## Próximos Passos
+## Próximos passos
 
 - [API Reference](./api-reference) - Documentação completa da API
 - [Troubleshooting](./troubleshooting) - Resolução de problemas

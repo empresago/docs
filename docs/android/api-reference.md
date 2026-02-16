@@ -191,7 +191,6 @@ Classe de configuração do SDK (usada internamente).
 data class GoABConfig(
     val accountId: Int,
     val apiToken: String,
-    val baseUrl: String,
     val timeoutSeconds: Int = 30,
     val appContext: AppContext? = null
 )
@@ -203,7 +202,6 @@ data class GoABConfig(
 |-------------|------|-------------|-----------|
 | `accountId` | Int | Sim | ID da conta |
 | `apiToken` | String | Sim | Token de autenticação |
-| `baseUrl` | String | Sim | URL base da API |
 | `timeoutSeconds` | Int | Não | Timeout em segundos (padrão: 30) |
 | `appContext` | AppContext? | Não | Contexto da aplicação (preenchido automaticamente) |
 
