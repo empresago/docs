@@ -1,78 +1,84 @@
 import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
-/**
- * Creating a sidebar enables you to:
- - create an ordered group of docs
- - render a sidebar for each doc of that group
- - provide next/previous navigation
-
- The sidebars can be generated from the filesystem, or explicitly defined here.
-
- Create as many sidebars as you want.
- */
 const sidebars: SidebarsConfig = {
-  // Sidebar principal para documentação do GoAB SDK
   tutorialSidebar: [
     {
       type: 'category',
-      label: 'Android',
+      label: 'Pesquisa In-App',
+      collapsed: false,
       items: [
-        'android/intro',
         {
           type: 'category',
-          label: 'Início Rápido',
+          label: 'Android',
           items: [
-            'android/getting-started',
-            'android/initialization',
+            'android-survey/intro',
+            {
+              type: 'category',
+              label: 'Início Rápido',
+              items: [
+                'android-survey/getting-started',
+                'android-survey/initialization',
+              ],
+            },
+            'android-survey/api-reference',
           ],
         },
         {
           type: 'category',
-          label: 'Referência',
-          items: [
-            'android/api-reference',
-            'android/use-cases',
-            'android/flow-examples',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Suporte',
-          items: [
-            'android/troubleshooting',
-          ],
+          label: 'iOS',
+          items: ['ios-survey/intro'],
         },
       ],
     },
     {
       type: 'category',
-      label: 'iOS',
+      label: 'Testes A/B',
+      collapsed: false,
       items: [
-        'ios/intro',
         {
           type: 'category',
-          label: 'Início Rápido',
+          label: 'Android',
           items: [
-            'ios/getting-started',
-            'ios/initialization',
+            'android/intro',
+            {
+              type: 'category',
+              label: 'Início Rápido',
+              items: [
+                'android/getting-started',
+                'android/initialization',
+              ],
+            },
+            'android/api-reference',
+            'android/use-cases',
+            'android/flow-examples',
+            {
+              type: 'category',
+              label: 'Suporte',
+              items: ['android/troubleshooting'],
+            },
           ],
         },
         {
           type: 'category',
-          label: 'Referência',
+          label: 'iOS',
           items: [
+            'ios/intro',
+            {
+              type: 'category',
+              label: 'Início Rápido',
+              items: [
+                'ios/getting-started',
+                'ios/initialization',
+              ],
+            },
             'ios/api-reference',
             'ios/use-cases',
             'ios/flow-examples',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Suporte',
-          items: [
-            'ios/troubleshooting',
+            {
+              type: 'category',
+              label: 'Suporte',
+              items: ['ios/troubleshooting'],
+            },
           ],
         },
       ],

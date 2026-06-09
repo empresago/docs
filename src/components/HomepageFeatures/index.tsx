@@ -1,5 +1,6 @@
 import type {ReactNode} from 'react';
 import clsx from 'clsx';
+import Link from '@docusaurus/Link';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
@@ -10,6 +11,17 @@ type FeatureItem = {
 };
 
 const FeatureList: FeatureItem[] = [
+  {
+    title: 'Pesquisas In-App',
+    Svg: require('@site/static/img/audience_image.svg').default,
+    description: (
+      <>
+        Ouça seus usuários no momento certo — após uma compra, ao concluir uma tarefa ou
+        quando fizer sentido para a jornada. Você cria e configura as pesquisas no painel
+        GoAB; o SDK exibe no app e reúne as respostas para você.{' '}
+      </>
+    ),
+  },
   {
     title: 'Fácil de Usar',
     Svg: require('@site/static/img/metric_image.svg').default,
@@ -44,7 +56,7 @@ const FeatureList: FeatureItem[] = [
 
 function Feature({title, Svg, description}: FeatureItem) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx('col col--6 col--lg-3')}>
       <div className="text--center">
         {typeof Svg === 'string' ? (
           <img src={Svg} className={styles.featureSvg} alt={title} />
