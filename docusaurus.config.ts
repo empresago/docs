@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'GoAB SDK Docs',
-  tagline: 'SDK para experimentos A/B e configurações remotas em Android e iOS',
+  tagline: 'SDKs para experimentos A/B, configurações remotas e pesquisas in-app',
   favicon: 'img/favicon.png',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -41,6 +41,7 @@ const config: Config = {
       'classic',
       {
         docs: {
+          routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -88,11 +89,15 @@ const config: Config = {
           items: [
             {
               label: 'Android SDK',
-              to: '/docs/android/getting-started',
+              to: '/android/getting-started',
             },
             {
               label: 'iOS SDK',
-              to: '/docs/ios/getting-started',
+              to: '/ios/getting-started',
+            },
+            {
+              label: 'Survey SDK Android',
+              to: '/android-survey/getting-started',
             },
           ],
         },
@@ -100,12 +105,16 @@ const config: Config = {
           title: 'Recursos',
           items: [
             {
-              label: 'API Reference',
-              to: '/docs/android/api-reference',
+              label: 'API Reference (A/B)',
+              to: '/android/api-reference',
+            },
+            {
+              label: 'API Reference (Survey)',
+              to: '/android-survey/api-reference',
             },
             {
               label: 'Troubleshooting',
-              to: '/docs/android/troubleshooting',
+              to: '/android/troubleshooting',
             },
           ],
         },

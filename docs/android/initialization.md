@@ -267,6 +267,6 @@ class MainActivity : AppCompatActivity() {
 
 ## Próximos Passos
 
-- [API Reference](../api-reference) - Métodos disponíveis
-  - [Casos de Uso](../use-cases) - Exemplos práticos
-  - [Troubleshooting](../troubleshooting) - Resolução de problemas
+- [API Reference](./api-reference) - Métodos disponíveis
+- [Casos de Uso](./use-cases) - Exemplos práticos
+- [Troubleshooting](./troubleshooting) - Resolução de problemas

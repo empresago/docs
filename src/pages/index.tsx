@@ -20,13 +20,18 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/android/getting-started">
-            Android SDK
+            to="/android/getting-started">
+            Android SDK (A/B)
           </Link>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/ios/getting-started">
-            iOS SDK
+            to="/ios/getting-started">
+            iOS SDK (A/B)
+          </Link>
+          <Link
+            className="button button--secondary button--lg"
+            to="/android-survey/getting-started">
+            Survey SDK Android
           </Link>
         </div>
       </div>
@@ -38,8 +43,8 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`${siteConfig.title} - SDK para experimentos A/B`}
-      description="SDK para experimentos A/B e configurações remotas. Implemente testes A/B facilmente em seus aplicativos Android e iOS.">
+      title={`${siteConfig.title} - SDKs GoAB`}
+      description="SDKs GoAB para experimentos A/B, configurações remotas e pesquisas in-app. Android, iOS e Survey SDK.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
