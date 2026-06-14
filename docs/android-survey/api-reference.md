@@ -15,8 +15,10 @@ Factory para criar instâncias do SDK.
 ### `create`
 
 ```kotlin
+import io.goab.survey.platform.SurveyPlatformContext
+
 fun create(
-    context: Context,
+    context: SurveyPlatformContext,
     accountId: Int,
     apiToken: String,
     timeoutMillis: Long = 30_000L
@@ -25,7 +27,7 @@ fun create(
 
 | Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `context` | Context | Contexto Android |
+| `context` | SurveyPlatformContext | Contexto da plataforma — em Android, envolva com `SurveyPlatformContext(context)` |
 | `accountId` | Int | ID da conta GoAB |
 | `apiToken` | String | Token de API |
 | `timeoutMillis` | Long | Timeout HTTP (milissegundos; padrão: 30 000) |
@@ -35,8 +37,10 @@ fun create(
 **Exemplo:**
 
 ```kotlin
+import io.goab.survey.platform.SurveyPlatformContext
+
 val surveySdk = SurveySdkFactory.create(
-    context = this,
+    context = SurveyPlatformContext(this),
     accountId = 2,
     apiToken = "your-api-token",
     timeoutMillis = 30_000L

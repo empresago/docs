@@ -41,10 +41,11 @@ dependencyResolutionManagement {
 ## 2. Criar instância
 
 ```kotlin
+import io.goab.survey.platform.SurveyPlatformContext
 import io.goab.survey.sdk.SurveySdkFactory
 
 val surveySdk = SurveySdkFactory.create(
-    context = this,
+    context = SurveyPlatformContext(this),
     accountId = 2,
     apiToken = "your-api-token",
     timeoutMillis = 30_000L
@@ -53,7 +54,7 @@ val surveySdk = SurveySdkFactory.create(
 
 | Parâmetro | Tipo | Obrigatório | Descrição |
 |-----------|------|-------------|-----------|
-| `context` | Context | Sim | Contexto Android (tipicamente da Activity) |
+| `context` | SurveyPlatformContext | Sim | Envolva o `Context` Android com `SurveyPlatformContext(this)` |
 | `accountId` | Int | Sim | ID da conta GoAB |
 | `apiToken` | String | Sim | Token de API da aplicação |
 | `timeoutMillis` | Long | Não | Timeout HTTP em milissegundos (padrão: 30 000) |
@@ -63,6 +64,7 @@ val surveySdk = SurveySdkFactory.create(
 O SDK precisa de um [SurveyUiHost](api-reference#surveyuihost) para apresentar surveys:
 
 ```kotlin
+import io.goab.survey.platform.SurveyPlatformContext
 import io.goab.survey.ui.SurveyUiHost
 import kotlinx.coroutines.launch
 
@@ -73,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         surveySdk = SurveySdkFactory.create(
-            context = this,
+            context = SurveyPlatformContext(this),
             accountId = 2,
             apiToken = "your-api-token",
             timeoutMillis = 30_000L

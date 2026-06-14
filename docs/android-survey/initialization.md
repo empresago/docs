@@ -9,10 +9,11 @@ Configure o Survey SDK na sua app.
 ## Criar instância
 
 ```kotlin
+import io.goab.survey.platform.SurveyPlatformContext
 import io.goab.survey.sdk.SurveySdkFactory
 
 val surveySdk = SurveySdkFactory.create(
-    context = applicationContext,
+    context = SurveyPlatformContext(applicationContext),
     accountId = 2,
     apiToken = "your-api-token",
     timeoutMillis = 30_000L
