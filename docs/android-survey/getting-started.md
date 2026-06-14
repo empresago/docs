@@ -20,9 +20,6 @@ Configure o GoAB Survey SDK na sua aplicação Android.
 ```gradle
 dependencies {
     implementation 'io.goab:goab-survey-sdk-android:1.0.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
-    implementation 'androidx.fragment:fragment-ktx:1.5.5'
 }
 ```
 
