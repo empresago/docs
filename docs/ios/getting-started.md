@@ -14,14 +14,14 @@ Configure o GoAB SDK em sua aplicação iOS em poucos minutos.
 
 ## 1. Adicionar o SDK
 
-O pacote iOS do GoAB está disponível no GitHub: [empresago/goab-ios-release](https://github.com/empresago/goab-ios-release).
+O pacote iOS do GoAB está disponível no GitHub: [empresago/goab-ios-releases](https://github.com/empresago/goab-ios-releases).
 
 ### Swift Package Manager (recomendado)
 
 1. No Xcode: **File → Add Package Dependencies...**
 2. Cole a URL do repositório:
    ```
-   https://github.com/empresago/goab-ios-release
+   https://github.com/empresago/goab-ios-releases
    ```
 3. Selecione a regra de dependência (ex.: **Up to Next Major Version**) e a versão desejada.
 4. Adicione o produto **GoABSDK** ao target do seu app.
@@ -30,7 +30,7 @@ Se o seu projeto usa `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/empresago/goab-ios-release", from: "1.0.0")
+    .package(url: "https://github.com/empresago/goab-ios-releases", from: "1.0.0")
 ]
 ```
 
@@ -39,7 +39,7 @@ dependencies: [
 No `Podfile`, use o repositório no GitHub:
 
 ```ruby
-pod 'GoABSDK', :git => 'https://github.com/empresago/goab-ios-release.git'
+pod 'GoABSDK', :git => 'https://github.com/empresago/goab-ios-releases.git'
 ```
 
 Ou, se o pacote estiver publicado no CocoaPods trunk:
