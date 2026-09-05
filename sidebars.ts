@@ -26,7 +26,18 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'iOS',
-          items: ['ios-survey/intro'],
+          items: [
+            'ios-survey/intro',
+            {
+              type: 'category',
+              label: 'Início Rápido',
+              items: [
+                'ios-survey/getting-started',
+                'ios-survey/initialization',
+              ],
+            },
+            'ios-survey/api-reference',
+          ],
         },
       ],
     },
