@@ -56,7 +56,7 @@ let surveySdk: SurveySdk = SurveySdkFactory.shared.create(
 | `apiToken` | String | Sim | Token de API da aplicação |
 | `timeoutMillis` | Int64 | Não | Timeout HTTP em milissegundos (padrão: 30 000) |
 
-`SurveySdkFactory` é um `object` Kotlin exposto no Swift como singleton — por isso o acesso é sempre via `SurveySdkFactory.shared`.
+Acesse a factory sempre via `SurveySdkFactory.shared`.
 
 ## 3. Inicializar e registar o host de apresentação
 
@@ -86,7 +86,7 @@ class SurveyManager {
 }
 ```
 
-`initialize()` é uma função `suspend` do Kotlin — no Swift ela chega como `async throws`. Chame-a a partir de uma `Task` ou de um contexto `async`.
+`initialize()` é `async throws` — chame-a a partir de uma `Task` ou de um contexto `async`.
 
 Sempre que a `UIViewController` que apresenta a pesquisa mudar (ex.: nova tela em primeiro plano), atualize o host:
 
@@ -127,7 +127,7 @@ Ao mudar o `userId`, surveys visíveis são fechadas e uma nova sessão analíti
 
 ## 6. Observar eventos de survey (opcional)
 
-`OnSurveyEventListener` é um `fun interface` do Kotlin, exposto no Swift como um closure:
+Registe um closure para observar eventos:
 
 ```swift
 let listener = surveySdk.addOnSurveyEventListener { event in

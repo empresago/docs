@@ -25,8 +25,6 @@ Ideal se você quer medir satisfação, validar uma nova feature, entender por q
 2. Na app, integra o SDK e informa **quem é o usuário** e **quando algo relevante acontece** (por exemplo, abriu a tela de checkout).
 3. O GoAB decide se aquela pessoa deve ver a pesquisa naquele momento; se sim, o SDK **exibe e coleta as respostas**.
 
-O SDK é compartilhado com o Android via Kotlin Multiplatform — a lógica de decisão e coleta é a mesma, só a superfície exposta ao Swift muda (veja as [diferenças em relação ao Android](./api-reference#diferenças-em-relação-ao-android)).
-
 A integração técnica fica nos guias abaixo — aqui o foco é o que o SDK **entrega** para o seu produto.
 
 ## Próximos passos

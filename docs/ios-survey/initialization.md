@@ -51,7 +51,7 @@ Task {
 
 Prepara o SDK para receber eventos e exibir pesquisas. Deve ser chamado **uma vez** após criar a instância.
 
-No Kotlin, `initialize()` é uma função `suspend`; a ponte Kotlin/Native a expõe no Swift como `async throws` — chame sempre de dentro de uma `Task` ou de um contexto `async`.
+`initialize()` é `async throws` — chame sempre de dentro de uma `Task` ou de um contexto `async`.
 
 ## Verificar estado
 

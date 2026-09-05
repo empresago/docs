@@ -6,13 +6,11 @@ sidebar_position: 4
 
 Documentação da **API pública** do GoAB Survey SDK iOS.
 
-O SDK é compartilhado com o Android via Kotlin Multiplatform; os tipos abaixo são a superfície Kotlin exposta ao Swift pela ponte Kotlin/Native. Diferenças de tipo em relação ao Android (ex.: `Int32`/`Int64` em vez de `Int`/`Long`, `async throws` em vez de `suspend`) são anotadas onde relevante.
-
 ---
 
 ## SurveySdkFactory
 
-Factory para criar instâncias do SDK. É um `object` Kotlin — no Swift, acessado via `.shared`.
+Factory para criar instâncias do SDK, acessada via `.shared`.
 
 ### `create`
 
@@ -83,7 +81,7 @@ surveySdk.setPresentationHost(host: SurveyUiHost(viewController: self))
 
 ## OnSurveyEventListener
 
-Callback quando algo acontece na survey — impressão, resposta, envio, fecho, etc. É um `fun interface` Kotlin (SAM), por isso o Swift o expõe como um closure comum.
+Closure chamado quando algo acontece na survey — impressão, resposta, envio, fecho, etc.
 
 ```swift
 (SurveyAnalyticsEvent) -> Void
@@ -113,8 +111,6 @@ func initialize() async throws
 ```
 
 Prepara o SDK para uso. Chame uma vez antes de [sendEvent](#sendevent).
-
-No Kotlin é uma função `suspend`; a ponte a expõe como `async throws` no Swift.
 
 **Exemplo:**
 
@@ -247,21 +243,6 @@ func removeOnSurveyEventListener(listener: OnSurveyEventListener)
 ```
 
 Remove um listener previamente registado com [addOnSurveyEventListener](#addonsurveyeventlistener).
-
----
-
-## Diferenças em relação ao Android
-
-O SDK é o mesmo código Kotlin Multiplatform nas duas plataformas; o que muda é só a superfície exposta pela ponte Kotlin/Native:
-
-| Android | iOS | Nota |
-|---------|-----|------|
-| `Context` real | `SurveyPlatformContext()` sem propriedades | iOS não precisa de referência de contexto de app |
-| `Int` / `Long` | `Int32` / `Int64` | Tipos Kotlin cruzam a ponte com largura explícita |
-| `suspend fun initialize()` | `func initialize() async throws` | Coroutine Kotlin vira `async throws` no Swift |
-| `SurveyUiHost(fragmentManager, context)` | `SurveyUiHost(viewController:)` | iOS não tem conceito de Fragment/Activity |
-| `fun interface OnSurveyEventListener` | closure `(SurveyAnalyticsEvent) -> Void` | SAM Kotlin vira closure Swift |
-| `setInspectEnabled(Boolean)` | **não disponível** | Recurso de debug de WebView só existe no Android |
 
 ## Exemplo completo
 
