@@ -19,7 +19,6 @@ O GoAB SDK é uma solução completa para:
 
 - ✅ **Fácil Integração**: Setup simples em poucos minutos
 - ✅ **Offline First**: Funciona mesmo sem conexão
-- ✅ **Clean Architecture**: Código bem estruturado e testável
 - ✅ **Type Safety**: Suporte completo ao Kotlin
 - ✅ **Performance**: Cache local para acesso rápido
 - ✅ **Flexível**: Configuração personalizável
