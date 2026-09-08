@@ -30,7 +30,7 @@ Se o seu projeto usa `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/empresago/goab-survey-sdk-ios", from: "1.0.2")
+    .package(url: "https://github.com/empresago/goab-survey-sdk-ios", from: "1.1.0")
 ]
 ```
 
@@ -127,13 +127,20 @@ Ao mudar o `userId`, surveys visíveis são fechadas e uma nova sessão analíti
 
 ## 6. Observar eventos de survey (opcional)
 
-Registe um closure para observar eventos:
+Registe um closure para observar eventos. `addOnSurveyEventListener` retorna um
+handle que você guarda para remover depois:
 
 ```swift
-let listener = surveySdk.addOnSurveyEventListener { event in
+let handle = surveySdk.addOnSurveyEventListener { event in
     print("telemetria: \(event.eventType)")
 }
+
+// ao encerrar a tela / logout:
+surveySdk.removeOnSurveyEventListener(listener: handle)
 ```
+
+Veja [Eventos de Survey](./events) para a tipagem de `SurveyAnalyticsEvent`, a
+lista de tipos de evento e o estado atual da entrega.
 
 ## 7. Fechar survey visível
 

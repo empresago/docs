@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # API Reference
@@ -77,7 +77,8 @@ surveySdk.setPresentationHost(
 
 ## OnSurveyEventListener
 
-Callback quando algo acontece na survey — impressão, resposta, envio, fecho, etc.
+`fun interface` de callback para a telemetria da survey — impressão, resposta,
+minimizar, envio, fecho, etc.
 
 ```kotlin
 fun interface OnSurveyEventListener {
@@ -87,13 +88,16 @@ fun interface OnSurveyEventListener {
 
 | Método | Descrição |
 |--------|-----------|
-| `onSurveyEvent` | Chamado quando a survey emite um evento relevante |
+| `onSurveyEvent` | Recebe um [`SurveyAnalyticsEvent`](./events#surveyanalyticsevent) por evento emitido |
+
+A tipagem completa do parâmetro, a lista de [tipos de evento](./events#tipos-de-evento)
+e o estado atual da entrega estão em **[Eventos de Survey](./events)**.
 
 **Exemplo:**
 
 ```kotlin
 val listener = OnSurveyEventListener { event ->
-    Log.d("Survey", "event=${event.eventType}")
+    Log.d("Survey", "event=${event.eventType.wireValue} surveyId=${event.surveyId}")
 }
 
 surveySdk.addOnSurveyEventListener(listener)

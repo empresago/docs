@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # API Reference
@@ -81,21 +81,31 @@ surveySdk.setPresentationHost(host: SurveyUiHost(viewController: self))
 
 ## OnSurveyEventListener
 
-Closure chamado quando algo acontece na survey — impressão, resposta, envio, fecho, etc.
+Closure chamado a cada evento de telemetria da survey — impressão, resposta,
+minimizar, envio, fecho, etc.
 
 ```swift
-(SurveyAnalyticsEvent) -> Void
+func addOnSurveyEventListener(
+    listener: @escaping (SurveyAnalyticsEvent) -> Void
+) -> OnSurveyEventListener
+
+func removeOnSurveyEventListener(listener: OnSurveyEventListener)
 ```
+
+`addOnSurveyEventListener` retorna um handle opaco (`OnSurveyEventListener`) que
+você guarda para remover o listener depois. A tipagem completa do parâmetro, a
+lista de [tipos de evento](./events#tipos-de-evento) e o estado atual da entrega
+estão em **[Eventos de Survey](./events)**.
 
 **Exemplo:**
 
 ```swift
-let listener = surveySdk.addOnSurveyEventListener { event in
-    print("event=\(event.eventType)")
+let handle = surveySdk.addOnSurveyEventListener { event in
+    print("event=\(event.eventType) surveyId=\(event.surveyId ?? 0)")
 }
 
 // ao encerrar a tela / logout:
-surveySdk.removeOnSurveyEventListener(listener: listener)
+surveySdk.removeOnSurveyEventListener(listener: handle)
 ```
 
 ---

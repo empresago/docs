@@ -19,7 +19,7 @@ Configure o GoAB Survey SDK na sua aplicação Android.
 
 ```gradle
 dependencies {
-    implementation 'io.goab:goab-survey-sdk-android:1.0.2'
+    implementation 'io.goab:goab-survey-sdk-android:1.1.0'
 }
 ```
 
@@ -136,13 +136,16 @@ Ao mudar o `userId`, surveys visíveis são fechadas e uma nova sessão analíti
 import io.goab.survey.sdk.OnSurveyEventListener
 
 val surveyListener = OnSurveyEventListener { event ->
-    Log.d("Survey", "telemetria: ${event.eventType}")
+    Log.d("Survey", "telemetria: ${event.eventType.wireValue}")
 }
 surveySdk.addOnSurveyEventListener(surveyListener)
 
 // remover quando não precisar mais:
 surveySdk.removeOnSurveyEventListener(surveyListener)
 ```
+
+Veja [Eventos de Survey](./events) para a tipagem de `SurveyAnalyticsEvent`, a
+lista de tipos de evento e o estado atual da entrega.
 
 ## 7. Fechar survey visível
 
