@@ -19,7 +19,7 @@ Configure o GoAB Survey SDK na sua aplicação Android.
 
 ```gradle
 dependencies {
-    implementation 'io.goab:goab-survey-sdk-android:1.0.1'
+    implementation 'io.goab:goab-survey-sdk-android:1.0.2'
 }
 ```
 
