@@ -4,38 +4,18 @@ sidebar_position: 4
 
 # Eventos de Survey
 
-O SDK expõe a telemetria da pesquisa através de um **closure listener** opcional.
-Use-o para espelhar impressões, respostas e conclusões no seu próprio analytics
-ou para reagir no app (ex.: dar um brinde depois que o usuário responde um NPS).
+O SDK notifica seu app a cada evento da pesquisa — impressão, resposta,
+minimizar, envio, fecho — através de um **closure listener** opcional. Use-o para
+espelhar o funil no seu próprio analytics ou para reagir no app (ex.: dar um
+brinde depois que o usuário responde um NPS).
 
-:::info Estado atual (v1.1.0)
-`addOnSurveyEventListener` já faz parte da API pública e os tipos abaixo
-(`SurveyAnalyticsEvent`, `SurveyEventType`) são estáveis. **Nesta versão o SDK
-ainda não entrega eventos aos listeners registrados** — a telemetria da pesquisa
-vai direto da WebView para a fila de envio ao backend GoAB. Registre o listener
-já se quiser, mas não construa lógica de produto que dependa do callback disparar
-antes da entrega ser habilitada.
-:::
-
-## Como funciona
-
-1. A pesquisa é renderizada dentro de um `WKWebView` gerido pelo SDK.
-2. Cada interação relevante (impressão, resposta, minimizar, enviar…) é emitida
-   pela camada web via a bridge JavaScript `GoABSurvey`.
-3. O SDK **persiste** cada evento numa fila local (SQLDelight) e faz *flush* em
-   lote para `POST /:accountId/survey-app/event`. O intervalo do lote vem da
-   configuração da conta.
-4. Quando a entrega ao listener estiver habilitada, o mesmo evento — já
-   enriquecido com `userId` e `sessionId` — será repassado de forma síncrona a
-   todos os listeners registrados.
-
-O envio ao backend **não depende** do listener: registrar (ou não) um listener
-não altera a coleta de dados da GoAB.
+Registrar (ou não) um listener **não afeta** a coleta de dados da GoAB — o
+listener é só uma cópia dos eventos para o seu app.
 
 ## Registrar e remover
 
 `addOnSurveyEventListener` recebe um closure `@escaping` e **retorna um handle**
-(`OnSurveyEventListener`) que você guarda para remover depois.
+que você guarda para remover depois.
 
 ```swift
 import GoABSurveySDK
@@ -44,14 +24,15 @@ let handle = surveySdk.addOnSurveyEventListener { event in
     switch event.eventType {
     case .surveyImpression:
         Analytics.track("survey_shown", ["survey_id": event.surveyId ?? 0])
-    case .surveySubmit:
-        Analytics.track("survey_completed", ["survey_id": event.surveyId ?? 0])
     case .questionAnswer:
         Analytics.track("survey_question_answered", [
             "survey_id": event.surveyId ?? 0,
             "question_id": event.questionId ?? 0,
-            "question_type": event.questionType ?? ""
+            "question_type": event.questionType ?? "",
+            "answer": (event.answer as? [String])?.joined(separator: "|") ?? "",
         ])
+    case .surveySubmit:
+        Analytics.track("survey_completed", ["survey_id": event.surveyId ?? 0])
     default:
         break
     }
@@ -62,10 +43,13 @@ surveySdk.removeOnSurveyEventListener(listener: handle)
 ```
 
 - Vários listeners podem coexistir.
-- Exceções/erros lançados dentro do closure são capturados pelo SDK — não
-  derrubam a pesquisa nem os outros listeners.
-- Não assuma a main thread dentro do closure; faça `DispatchQueue.main.async`
-  se for tocar em UIKit.
+- Um erro lançado dentro do closure é capturado pelo SDK — não derruba a pesquisa
+  nem os outros listeners.
+- Não assuma a main thread dentro do closure; use `DispatchQueue.main.async` se
+  for tocar em UIKit.
+- Faça só trabalho leve no closure; mande processamento pesado para uma fila sua.
+- **Guarde o handle** e chame `removeOnSurveyEventListener` no fim do ciclo de
+  vida (logout, `deinit`) para não vazar referências capturadas.
 
 ## Assinatura
 
@@ -77,93 +61,110 @@ func addOnSurveyEventListener(
 func removeOnSurveyEventListener(listener: OnSurveyEventListener)
 ```
 
-O tipo `OnSurveyEventListener` é opaco — serve só como handle de remoção. O
+`OnSurveyEventListener` é um tipo opaco — serve só como handle de remoção. O
 parâmetro do closure é sempre um [`SurveyAnalyticsEvent`](#surveyanalyticsevent).
 
 ## `SurveyAnalyticsEvent`
 
-Classe exportada pelo XCFramework (origem Kotlin `data class`). Representa **uma**
-linha de telemetria. Nem todo campo é preenchido em todo evento — veja a tabela
-de [tipos de evento](#tipos-de-evento). Todos os campos, exceto `eventType`, são
-opcionais em Swift.
+Um evento da pesquisa. Nem todo campo é preenchido em todo evento — veja a
+coluna correspondente na [tabela de tipos](#tipos-de-evento). Todos os campos,
+exceto `eventType`, são opcionais.
 
-| Campo | Tipo Swift | Sempre presente? | Descrição |
-|-------|-----------|:---:|-----------|
-| `eventType` | `SurveyEventType` | Sim | O tipo do evento (enum, ver abaixo). |
-| `surveyId` | `KotlinLong?` | Sim* | ID da pesquisa. Nulo apenas quando o SDK não conseguiu associar o evento a uma pesquisa ativa. |
-| `userId` | `String?` | Enriquecido | ID do usuário definido via `setUserId`. Nulo se anônimo. |
-| `sessionId` | `String?` | Enriquecido | ID da sessão analítica atual. Rotaciona no `initialize()` e a cada troca de `userId`. |
-| `timestampIso` | `String?` | — | Instante do evento em ISO-8601 (UTC). Preferido sobre `timestampMillis` quando ambos existem. |
-| `timestampMillis` | `KotlinLong?` | — | Instante do evento em epoch millis. |
-| `questionId` | `KotlinLong?` | Só em eventos de pergunta | ID da pergunta relacionada. |
-| `questionType` | `String?` | Só em eventos de pergunta | Tipo da pergunta no formato *wire* (ver [tipos de pergunta](#tipos-de-pergunta)). |
-| `answer` | `Any?` | Só em eventos de resposta | Resposta do usuário. `String`, `NSNumber`, `Bool` ou `NSArray` (múltipla escolha). |
-| `freeTextAnswer` | `String?` | Só em texto livre | Conteúdo digitado em campos de texto aberto. |
+| Campo | Tipo Swift | Descrição |
+|-------|-----------|-----------|
+| `eventType` | `SurveyEventType` | O tipo do evento (enum, ver abaixo). Sempre presente. |
+| `surveyId` | `KotlinLong?` | ID da pesquisa. Presente em todos os eventos normais. |
+| `userId` | `String?` | ID do usuário definido via `setUserId`, ou `nil` se anônimo. Preenchido pelo SDK. |
+| `sessionId` | `String?` | ID da sessão atual. Muda no `initialize()` e a cada troca de `userId`. Preenchido pelo SDK. |
+| `timestampIso` | `String?` | Instante do evento em ISO-8601 (UTC). |
+| `timestampMillis` | `KotlinLong?` | Instante do evento em epoch millis. Alternativa a `timestampIso`. |
+| `questionId` | `KotlinLong?` | ID da pergunta. Presente só em eventos de pergunta. |
+| `questionType` | `String?` | Tipo da pergunta (ver [tipos de pergunta](#tipos-de-pergunta)). Presente só em eventos de pergunta. |
+| `answer` | `Any?` | Resposta do usuário. Em tempo de execução é sempre um array de strings — leia com `event.answer as? [String]`. Escala/NPS chega como string numérica (ex.: `["9"]`); múltipla escolha traz vários itens. |
+| `freeTextAnswer` | `String?` | Texto digitado em campos de texto aberto, quando aplicável. |
 
-\* Ver a coluna correspondente na tabela de tipos.
+`KotlinLong?` é o boxing do Kotlin/Native para inteiro opcional — leia com
+`event.surveyId?.int64Value` quando precisar de um `Int64`.
 
-`KotlinLong?` é o boxing padrão do Kotlin/Native para `Long` opcional — leia com
-`event.surveyId?.int64Value` quando precisar de um `Int64` Swift.
-
-### Enriquecimento
-
-Antes de chegar ao listener (e à fila de envio), o SDK preenche `userId` e
-`sessionId` a partir do estado atual, caso o evento de origem não os tenha
-trazido. Os demais campos vêm da camada web como emitidos.
+Trabalhe sempre com os campos opcionais de forma defensiva (`??`,
+`if let`, `switch event.eventType`), lendo apenas o que a tabela de tipos
+garante para aquele evento.
 
 ## Tipos de evento
 
-`SurveyEventType` — enum exportado pelo XCFramework. Cada caso tem um `wireValue`
-(o que trafega no campo `et` do payload enviado ao backend). Os nomes dos casos
-em Swift seguem o *camelCase* do Kotlin.
+`SurveyEventType` — enum exportado pelo SDK. Os nomes dos casos em Swift seguem
+*camelCase*. Cada caso tem um `wireValue` (string estável, útil para logar ou
+encaminhar o tipo ao seu analytics).
 
-| Caso Swift | `wireValue` | Quando ocorre | Campos típicos além de `eventType`/`surveyId` |
+| Caso Swift | `wireValue` | Quando ocorre | Campos preenchidos além de `eventType` / `surveyId` |
 |-----------|-------------|---------------|-----------|
-| `.surveyImpression` | `survey_impression` | A pesquisa foi exibida na tela. | `sessionId`, timestamp |
-| `.surveyInteract` | `survey_interact` | Interação genérica com o container da pesquisa. | timestamp |
-| `.surveyMinimize` | `survey_minimize` | Usuário minimizou a pesquisa para a barra. | timestamp |
-| `.surveyMaximize` | `survey_maximize` | Usuário restaurou a pesquisa a partir da barra minimizada. | timestamp |
+| `.surveyImpression` | `survey_impression` | A pesquisa apareceu na tela. | `sessionId`, timestamp |
+| `.surveyInteract` | `survey_interact` | Interação genérica com a pesquisa. | timestamp |
+| `.surveyMinimize` | `survey_minimize` | Usuário minimizou a pesquisa. | timestamp |
+| `.surveyMaximize` | `survey_maximize` | Usuário restaurou a pesquisa minimizada. | timestamp |
 | `.surveyClose` | `survey_close` | Pesquisa fechada/dispensada sem envio. | timestamp |
 | `.questionImpression` | `question_impression` | Uma pergunta ficou visível. | `questionId`, `questionType` |
-| `.questionInteract` | `question_interact` | Usuário interagiu com um controle da pergunta (sem confirmar). | `questionId`, `questionType` |
-| `.questionAnswer` | `question_answer` | Usuário respondeu uma pergunta específica. | `questionId`, `questionType`, `answer` e/ou `freeTextAnswer` |
-| `.questionSkip` | `question_skip` | Pergunta pulada (quando permitido). | `questionId`, `questionType` |
+| `.questionInteract` | `question_interact` | Usuário mexeu num controle da pergunta (ainda sem confirmar). | `questionId`, `questionType`, `answer` parcial |
+| `.questionAnswer` | `question_answer` | Usuário respondeu uma pergunta. | `questionId`, `questionType`, `answer` e/ou `freeTextAnswer` |
+| `.questionSkip` | `question_skip` | Pergunta pulada. | `questionId`, `questionType` |
 | `.surveyAnswer` | `survey_answer` | Resposta consolidada da pesquisa. | `answer` |
 | `.surveySubmit` | `survey_submit` | Usuário concluiu e enviou a pesquisa. | `sessionId`, timestamp |
 
-Para converter um `wireValue` recebido de outra fonte:
-
-```swift
-let type = SurveyEventType.companion.fromWire(value: "survey_submit") // -> SurveyEventType? (nil se desconhecido)
-```
-
 ## Tipos de pergunta
 
-Valores possíveis de `questionType` (campo *wire* `qt`). Determinam como `answer`
-é normalizado no envio:
+Valores possíveis de `questionType`:
 
-| `questionType` | Significado | Forma de `answer` |
-|----------------|-------------|-------------------|
-| `radio` | Escolha única | `String` (uma opção) |
-| `checkbox` | Múltipla escolha | `NSArray` de `String` (ou `String` com valores separados por vírgula) |
-| `select` | Dropdown de escolha única | `String` |
-| `nps` | Nota NPS (0–10) | `NSNumber` |
-| `rating` / `scale` | Nota / escala | `NSNumber` |
-| `text` | Texto livre | vai em `freeTextAnswer` |
+| `questionType` | Significado | Conteúdo de `answer` |
+|----------------|-------------|----------------------|
+| `radio` | Escolha única | 1 item — o texto da opção |
+| `select` | Dropdown de escolha única | 1 item |
+| `checkbox` | Múltipla escolha | 1+ itens |
+| `nps` | Nota NPS (0–10) | 1 item — a nota como string (`["10"]`) |
+| `rating` / `scale` / `star` / `emoji` | Nota / escala | 1 item — a nota como string |
+| `text` | Texto livre | o texto digitado (em `answer` e/ou `freeTextAnswer`) |
 
-Apenas `checkbox` preserva múltiplos valores no envio; os demais tipos colapsam
-para o primeiro valor.
+## Exemplo: acompanhar o funil da pesquisa
 
-## Boas práticas
+```swift
+final class SurveyFunnelTracker {
 
-- **Idempotência no seu lado:** o mesmo evento lógico pode, em cenários de
-  retry/reprocessamento, chegar mais de uma vez. Deduplique por
-  `surveyId` + `eventType` + `questionId` + timestamp se precisar de contagem
-  exata.
-- **Não bloqueie o closure:** faça só um enfileiramento rápido; trabalho pesado
-  vai para uma fila sua.
-- **Guarde o handle** retornado e chame `removeOnSurveyEventListener` no fim do
-  ciclo de vida (logout, `deinit`) para não vazar referências capturadas.
+    private var handle: OnSurveyEventListener?
+
+    func attach(to surveySdk: SurveySdk) {
+        handle = surveySdk.addOnSurveyEventListener { [weak self] event in
+            self?.handle(event)
+        }
+    }
+
+    func detach(from surveySdk: SurveySdk) {
+        if let handle { surveySdk.removeOnSurveyEventListener(listener: handle) }
+        handle = nil
+    }
+
+    private func handle(_ event: SurveyAnalyticsEvent) {
+        let base: [String: Any] = [
+            "survey_id": event.surveyId ?? 0,
+            "session_id": event.sessionId ?? "",
+        ]
+        switch event.eventType {
+        case .surveyImpression:
+            Analytics.track("survey_impression", base)
+        case .questionAnswer:
+            Analytics.track("survey_question_answered", base.merging([
+                "question_id": event.questionId ?? 0,
+                "question_type": event.questionType ?? "",
+                "answer": (event.answer as? [String])?.joined(separator: "|") ?? "",
+            ]) { _, new in new })
+        case .surveySubmit:
+            Analytics.track("survey_completed", base)
+        case .surveyClose:
+            Analytics.track("survey_abandoned", base)
+        default:
+            break
+        }
+    }
+}
+```
 
 ## Próximos passos
 

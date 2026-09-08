@@ -4,33 +4,13 @@ sidebar_position: 4
 
 # Eventos de Survey
 
-O SDK expõe a telemetria da pesquisa através de um **listener** opcional. Use-o
-para espelhar impressões, respostas e conclusões no seu próprio analytics ou para
-reagir no app (ex.: dar um brinde depois que o usuário responde um NPS).
+O SDK notifica seu app a cada evento da pesquisa — impressão, resposta,
+minimizar, envio, fecho — através de um **listener** opcional. Use-o para
+espelhar o funil no seu próprio analytics ou para reagir no app (ex.: dar um
+brinde depois que o usuário responde um NPS).
 
-:::info Estado atual (v1.1.0)
-`addOnSurveyEventListener` já faz parte da API pública e os tipos abaixo
-(`SurveyAnalyticsEvent`, `SurveyEventType`) são estáveis. **Nesta versão o SDK
-ainda não entrega eventos aos listeners registrados** — a telemetria da pesquisa
-vai direto da WebView para a fila de envio ao backend GoAB. Registre o listener
-já se quiser, mas não construa lógica de produto que dependa do callback disparar
-antes da entrega ser habilitada.
-:::
-
-## Como funciona
-
-1. A pesquisa é renderizada dentro de uma `WebView` gerida pelo SDK.
-2. Cada interação relevante (impressão, resposta, minimizar, enviar…) é emitida
-   pela camada web via a bridge JavaScript `GoABSurvey`.
-3. O SDK **persiste** cada evento numa fila local (SQLDelight) e faz *flush* em
-   lote para `POST /:accountId/survey-app/event`. O intervalo do lote vem da
-   configuração da conta.
-4. Quando a entrega ao listener estiver habilitada, o mesmo evento — já
-   enriquecido com `userId` e `sessionId` — será repassado de forma síncrona a
-   todos os listeners registrados, na thread em que o SDK o processa.
-
-O envio ao backend **não depende** do listener: registrar (ou não) um listener
-não altera a coleta de dados da GoAB.
+Registrar (ou não) um listener **não afeta** a coleta de dados da GoAB — o
+listener é só uma cópia dos eventos para o seu app.
 
 ## Registrar e remover
 
@@ -48,7 +28,8 @@ val listener = OnSurveyEventListener { event ->
             analytics.track("survey_question_answered", mapOf(
                 "survey_id" to event.surveyId,
                 "question_id" to event.questionId,
-                "question_type" to event.questionType
+                "question_type" to event.questionType,
+                "answer" to (event.answer as? List<String>)?.joinToString("|")
             ))
         else -> Unit
     }
@@ -61,12 +42,15 @@ surveySdk.removeOnSurveyEventListener(listener)
 ```
 
 - Vários listeners podem coexistir.
-- O **mesmo** objeto listener não é registrado duas vezes (dedupe por
-  identidade).
-- Exceções lançadas dentro do callback são capturadas e logadas pelo SDK — não
-  derrubam a pesquisa nem os outros listeners.
-- Não há garantia de thread: trate o callback como potencialmente fora da main
-  thread e faça o *hop* para a UI se precisar.
+- O **mesmo** objeto listener não é registrado duas vezes.
+- Uma exceção lançada dentro do seu callback é capturada pelo SDK — não derruba a
+  pesquisa nem os outros listeners.
+- Não assuma a *main thread* dentro do callback; faça o *hop* para a UI se
+  precisar tocar em views.
+- Faça só trabalho leve no callback (ex.: enfileirar); mande processamento pesado
+  para uma coroutine sua.
+- **Remova o listener** no fim do ciclo de vida (logout, `onDestroy`) para não
+  vazar referência da Activity.
 
 ## `OnSurveyEventListener`
 
@@ -76,89 +60,99 @@ fun interface OnSurveyEventListener {
 }
 ```
 
-É uma `fun interface`, então aceita lambda. O único parâmetro é sempre um
+`fun interface` — aceita lambda. O único parâmetro é sempre um
 [`SurveyAnalyticsEvent`](#surveyanalyticsevent).
 
 ## `SurveyAnalyticsEvent`
 
-`data class` no pacote `io.goab.survey.domain.event`. Representa **uma** linha de
-telemetria. Nem todo campo é preenchido em todo evento — veja a tabela de
-[tipos de evento](#tipos-de-evento).
+Um evento da pesquisa. Nem todo campo é preenchido em todo evento — veja a
+coluna correspondente na [tabela de tipos](#tipos-de-evento).
 
-| Campo | Tipo | Sempre presente? | Descrição |
-|-------|------|:---:|-----------|
-| `eventType` | `SurveyEventType` | Sim | O tipo do evento (enum, ver abaixo). |
-| `surveyId` | `Long?` | Sim* | ID da pesquisa. Nulo apenas em eventos que o SDK não conseguiu associar a uma pesquisa ativa. |
-| `userId` | `String?` | Enriquecido | ID do usuário definido via `setUserId`. Nulo se anônimo. |
-| `sessionId` | `String?` | Enriquecido | ID da sessão analítica atual. Rotaciona no `initialize()` e a cada troca de `userId`. |
-| `timestampIso` | `String?` | — | Instante do evento em ISO-8601 (UTC). Preferido sobre `timestampMillis` quando ambos existem. |
-| `timestampMillis` | `Long?` | — | Instante do evento em epoch millis. |
-| `questionId` | `Long?` | Só em eventos de pergunta | ID da pergunta relacionada. |
-| `questionType` | `String?` | Só em eventos de pergunta | Tipo da pergunta no formato *wire* (ver [tipos de pergunta](#tipos-de-pergunta)). |
-| `answer` | `Any?` | Só em eventos de resposta | Resposta do usuário. `String`, `Number`, `Boolean` ou `Collection<*>` (múltipla escolha). |
-| `freeTextAnswer` | `String?` | Só em texto livre | Conteúdo digitado em campos de texto aberto. |
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `eventType` | `SurveyEventType` | O tipo do evento (enum, ver abaixo). Sempre presente. |
+| `surveyId` | `Long?` | ID da pesquisa. Presente em todos os eventos normais. |
+| `userId` | `String?` | ID do usuário definido via `setUserId`, ou `null` se anônimo. Preenchido pelo SDK. |
+| `sessionId` | `String?` | ID da sessão atual. Muda no `initialize()` e a cada troca de `userId`. Preenchido pelo SDK. |
+| `timestampIso` | `String?` | Instante do evento em ISO-8601 (UTC). |
+| `timestampMillis` | `Long?` | Instante do evento em epoch millis. Alternativa a `timestampIso`. |
+| `questionId` | `Long?` | ID da pergunta. Presente só em eventos de pergunta. |
+| `questionType` | `String?` | Tipo da pergunta (ver [tipos de pergunta](#tipos-de-pergunta)). Presente só em eventos de pergunta. |
+| `answer` | `Any?` | Resposta do usuário. Em tempo de execução é sempre `List<String>` — leia com `event.answer as? List<String>`. Presente em `question_interact` / `question_answer` / `survey_answer`. Escala/NPS chega como string numérica (ex.: `["9"]`); múltipla escolha traz vários itens. |
+| `freeTextAnswer` | `String?` | Texto digitado em campos de texto aberto, quando aplicável. |
 
-\* Ver a coluna correspondente na tabela de tipos.
-
-### Enriquecimento
-
-Antes de chegar ao listener (e à fila de envio), o SDK preenche `userId` e
-`sessionId` a partir do estado atual, caso o evento de origem não os tenha
-trazido. Os demais campos vêm da camada web como emitidos.
+Trabalhe sempre com os campos opcionais de forma defensiva (`?.`,
+`when (event.eventType)`), lendo apenas o que a tabela de tipos garante para
+aquele evento.
 
 ## Tipos de evento
 
-`enum class SurveyEventType(val wireValue: String)` — pacote
-`io.goab.survey.domain.event`. O `wireValue` é o que trafega no campo `et` do
-payload enviado ao backend.
+`enum class SurveyEventType` — pacote `io.goab.survey.domain.event`. Cada
+constante tem um `wireValue` (string estável, útil para logar ou encaminhar o
+tipo ao seu analytics).
 
-| Constante | `wireValue` | Quando ocorre | Campos típicos além de `eventType`/`surveyId` |
+| Constante | `wireValue` | Quando ocorre | Campos preenchidos além de `eventType` / `surveyId` |
 |-----------|-------------|---------------|-----------|
-| `SURVEY_IMPRESSION` | `survey_impression` | A pesquisa foi exibida na tela. | `sessionId`, timestamp |
-| `SURVEY_INTERACT` | `survey_interact` | Interação genérica com o container da pesquisa. | timestamp |
-| `SURVEY_MINIMIZE` | `survey_minimize` | Usuário minimizou a pesquisa para a barra. | timestamp |
-| `SURVEY_MAXIMIZE` | `survey_maximize` | Usuário restaurou a pesquisa a partir da barra minimizada. | timestamp |
+| `SURVEY_IMPRESSION` | `survey_impression` | A pesquisa apareceu na tela. | `sessionId`, timestamp |
+| `SURVEY_INTERACT` | `survey_interact` | Interação genérica com a pesquisa. | timestamp |
+| `SURVEY_MINIMIZE` | `survey_minimize` | Usuário minimizou a pesquisa. | timestamp |
+| `SURVEY_MAXIMIZE` | `survey_maximize` | Usuário restaurou a pesquisa minimizada. | timestamp |
 | `SURVEY_CLOSE` | `survey_close` | Pesquisa fechada/dispensada sem envio. | timestamp |
 | `QUESTION_IMPRESSION` | `question_impression` | Uma pergunta ficou visível. | `questionId`, `questionType` |
-| `QUESTION_INTERACT` | `question_interact` | Usuário interagiu com um controle da pergunta (sem confirmar). | `questionId`, `questionType` |
-| `QUESTION_ANSWER` | `question_answer` | Usuário respondeu uma pergunta específica. | `questionId`, `questionType`, `answer` e/ou `freeTextAnswer` |
-| `QUESTION_SKIP` | `question_skip` | Pergunta pulada (quando permitido). | `questionId`, `questionType` |
+| `QUESTION_INTERACT` | `question_interact` | Usuário mexeu num controle da pergunta (ainda sem confirmar). | `questionId`, `questionType`, `answer` parcial |
+| `QUESTION_ANSWER` | `question_answer` | Usuário respondeu uma pergunta. | `questionId`, `questionType`, `answer` e/ou `freeTextAnswer` |
+| `QUESTION_SKIP` | `question_skip` | Pergunta pulada. | `questionId`, `questionType` |
 | `SURVEY_ANSWER` | `survey_answer` | Resposta consolidada da pesquisa. | `answer` |
 | `SURVEY_SUBMIT` | `survey_submit` | Usuário concluiu e enviou a pesquisa. | `sessionId`, timestamp |
 
-Para tratar um `wireValue` recebido de outra fonte:
-
-```kotlin
-val type = SurveyEventType.fromWire("survey_submit") // -> SurveyEventType.SURVEY_SUBMIT? (nulo se desconhecido)
-```
-
 ## Tipos de pergunta
 
-Valores possíveis de `questionType` (campo *wire* `qt`). Determinam como `answer`
-é normalizado no envio:
+Valores possíveis de `questionType`:
 
-| `questionType` | Significado | Forma de `answer` |
-|----------------|-------------|-------------------|
-| `radio` | Escolha única | `String` (uma opção) |
-| `checkbox` | Múltipla escolha | `Collection<String>` (ou `String` com valores separados por vírgula) |
-| `select` | Dropdown de escolha única | `String` |
-| `nps` | Nota NPS (0–10) | `Number` |
-| `rating` / `scale` | Nota / escala | `Number` |
-| `text` | Texto livre | vai em `freeTextAnswer` |
+| `questionType` | Significado | Conteúdo de `answer` |
+|----------------|-------------|----------------------|
+| `radio` | Escolha única | 1 item — o texto da opção |
+| `select` | Dropdown de escolha única | 1 item |
+| `checkbox` | Múltipla escolha | 1+ itens |
+| `nps` | Nota NPS (0–10) | 1 item — a nota como string (`["10"]`) |
+| `rating` / `scale` / `star` / `emoji` | Nota / escala | 1 item — a nota como string |
+| `text` | Texto livre | o texto digitado (em `answer` e/ou `freeTextAnswer`) |
 
-Apenas `checkbox` preserva múltiplos valores no envio; os demais tipos colapsam
-para o primeiro valor.
+## Exemplo: acompanhar o funil da pesquisa
 
-## Boas práticas
+```kotlin
+class SurveyFunnelTracker(private val analytics: Analytics) : OnSurveyEventListener {
 
-- **Idempotência no seu lado:** o mesmo evento lógico pode, em cenários de
-  retry/reprocessamento, chegar mais de uma vez. Deduplique por
-  `surveyId` + `eventType` + `questionId` + timestamp se precisar de contagem
-  exata.
-- **Não bloqueie o callback:** faça só um enfileiramento rápido; trabalho pesado
-  vai para uma coroutine sua.
-- **Remova o listener** no fim do ciclo de vida (logout, `onDestroy`) para não
-  vazar referência da Activity.
+    override fun onSurveyEvent(event: SurveyAnalyticsEvent) {
+        val base = mapOf(
+            "survey_id" to event.surveyId,
+            "session_id" to event.sessionId,
+        )
+        when (event.eventType) {
+            SurveyEventType.SURVEY_IMPRESSION ->
+                analytics.track("survey_impression", base)
+
+            SurveyEventType.QUESTION_ANSWER ->
+                analytics.track("survey_question_answered", base + mapOf(
+                    "question_id" to event.questionId,
+                    "question_type" to event.questionType,
+                    "answer" to (event.answer as? List<String>)?.joinToString("|"),
+                ))
+
+            SurveyEventType.SURVEY_SUBMIT ->
+                analytics.track("survey_completed", base)
+
+            SurveyEventType.SURVEY_CLOSE ->
+                analytics.track("survey_abandoned", base)
+
+            else -> Unit
+        }
+    }
+}
+
+// registro
+surveySdk.addOnSurveyEventListener(funnelTracker)
+```
 
 ## Próximos passos
 

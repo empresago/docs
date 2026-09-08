@@ -30,7 +30,7 @@ Se o seu projeto usa `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/empresago/goab-survey-sdk-ios", from: "1.1.0")
+    .package(url: "https://github.com/empresago/goab-survey-sdk-ios", from: "1.2.0")
 ]
 ```
 
@@ -140,7 +140,7 @@ surveySdk.removeOnSurveyEventListener(listener: handle)
 ```
 
 Veja [Eventos de Survey](./events) para a tipagem de `SurveyAnalyticsEvent`, a
-lista de tipos de evento e o estado atual da entrega.
+lista de tipos de evento e exemplos de uso.
 
 ## 7. Fechar survey visível
 

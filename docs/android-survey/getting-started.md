@@ -19,7 +19,7 @@ Configure o GoAB Survey SDK na sua aplicação Android.
 
 ```gradle
 dependencies {
-    implementation 'io.goab:goab-survey-sdk-android:1.1.0'
+    implementation 'io.goab:goab-survey-sdk-android:1.2.0'
 }
 ```
 
@@ -145,7 +145,7 @@ surveySdk.removeOnSurveyEventListener(surveyListener)
 ```
 
 Veja [Eventos de Survey](./events) para a tipagem de `SurveyAnalyticsEvent`, a
-lista de tipos de evento e o estado atual da entrega.
+lista de tipos de evento e exemplos de uso.
 
 ## 7. Fechar survey visível
 
