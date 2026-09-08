@@ -43,7 +43,15 @@ Obtém o valor de uma chave de experimento.
 - `defaultValue: Any` - Valor padrão se a chave não for encontrada (obrigatório)
 
 **Retorna:**
-- `Any` - Valor do experimento ou valor padrão
+- `Any` - Valor da chave, resolvido pelo backend
+
+**Ordem de resolução do valor** (o backend resolve tudo e o SDK só repassa):
+
+1. **Override da variante** — se o usuário está na amostra de um experimento ativo que referencia a chave, vale o valor definido para a variante sorteada (o grupo de controle também pode ter override).
+2. **Default da conta** — o valor cadastrado para a chave no registro de Remote Config da conta (vale para todos os apps).
+3. **`defaultValue` do código** — usado **somente** se a chave não existe no registro da conta.
+
+As chaves de Remote Config são um **registro por conta**: são cadastradas uma vez (nome, tipo e default) e valem para todos os apps; um experimento apenas referencia chaves existentes e sobrescreve o valor por variante.
 
 **Exemplo:**
 ```kotlin

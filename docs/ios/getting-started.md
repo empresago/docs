@@ -30,7 +30,7 @@ Se o seu projeto usa `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/empresago/goab-ios-releases", from: "1.0.0")
+    .package(url: "https://github.com/empresago/goab-ios-releases", from: "1.1.0")
 ]
 ```
 
@@ -45,7 +45,7 @@ pod 'GoABSDK', :git => 'https://github.com/empresago/goab-ios-releases.git'
 Ou, se o pacote estiver publicado no CocoaPods trunk:
 
 ```ruby
-pod 'GoABSDK', '~> 1.0'
+pod 'GoABSDK', '~> 1.1'
 ```
 
 Depois execute:

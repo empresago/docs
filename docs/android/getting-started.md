@@ -19,7 +19,7 @@ Configure o GoAB SDK em sua aplicação Android em poucos minutos.
 
 ```gradle
 dependencies {
-    implementation 'io.goab:goab-sdk:1.1.0'
+    implementation 'io.goab:goab-sdk:1.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
 }
@@ -48,7 +48,7 @@ dependencyResolutionManagement {
 <dependency>
     <groupId>io.goab</groupId>
     <artifactId>goab-sdk</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
