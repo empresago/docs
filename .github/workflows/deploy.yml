@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.actor == 'empresago'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +38,7 @@ jobs:
           path: build
 
   deploy:
+    if: github.actor == 'empresago'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
