@@ -33,6 +33,11 @@ function HomepageHeader() {
             to="/android-survey/getting-started">
             Survey SDK Android
           </Link>
+          <Link
+            className="button button--secondary button--lg"
+            to="/ios-survey/getting-started">
+            Survey SDK iOS
+          </Link>
         </div>
       </div>
     </header>

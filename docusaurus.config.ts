@@ -99,6 +99,10 @@ const config: Config = {
               label: 'Survey SDK Android',
               to: '/android-survey/getting-started',
             },
+            {
+              label: 'Survey SDK iOS',
+              to: '/ios-survey/getting-started',
+            },
           ],
         },
         {
@@ -109,8 +113,12 @@ const config: Config = {
               to: '/android/api-reference',
             },
             {
-              label: 'API Reference (Survey)',
+              label: 'API Reference (Survey Android)',
               to: '/android-survey/api-reference',
+            },
+            {
+              label: 'API Reference (Survey iOS)',
+              to: '/ios-survey/api-reference',
             },
             {
               label: 'Troubleshooting',
