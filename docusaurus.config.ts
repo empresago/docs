@@ -88,20 +88,12 @@ const config: Config = {
           title: 'Plataformas',
           items: [
             {
-              label: 'Android SDK',
-              to: '/android/getting-started',
+              label: 'Teste App',
+              to: '/teste-app',
             },
             {
-              label: 'iOS SDK',
-              to: '/ios/getting-started',
-            },
-            {
-              label: 'Survey SDK Android',
-              to: '/android-survey/getting-started',
-            },
-            {
-              label: 'Survey SDK iOS',
-              to: '/ios-survey/getting-started',
+              label: 'Survey',
+              to: '/survey',
             },
           ],
         },

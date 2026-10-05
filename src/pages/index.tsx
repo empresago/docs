@@ -20,23 +20,13 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/android/getting-started">
-            Android SDK (A/B)
+            to="/teste-app">
+            Teste App
           </Link>
           <Link
             className="button button--secondary button--lg"
-            to="/ios/getting-started">
-            iOS SDK (A/B)
-          </Link>
-          <Link
-            className="button button--secondary button--lg"
-            to="/android-survey/getting-started">
-            Survey SDK Android
-          </Link>
-          <Link
-            className="button button--secondary button--lg"
-            to="/ios-survey/getting-started">
-            Survey SDK iOS
+            to="/survey">
+            Survey
           </Link>
         </div>
       </div>
