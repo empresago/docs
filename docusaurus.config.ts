@@ -88,16 +88,12 @@ const config: Config = {
           title: 'Plataformas',
           items: [
             {
-              label: 'Android SDK',
-              to: '/android/getting-started',
+              label: 'Teste App',
+              to: '/teste-app',
             },
             {
-              label: 'iOS SDK',
-              to: '/ios/getting-started',
-            },
-            {
-              label: 'Survey SDK Android',
-              to: '/android-survey/getting-started',
+              label: 'Survey',
+              to: '/survey',
             },
           ],
         },
@@ -105,16 +101,16 @@ const config: Config = {
           title: 'Recursos',
           items: [
             {
-              label: 'API Reference (A/B)',
-              to: '/android/api-reference',
+              label: 'API Reference (Teste App)',
+              to: '/teste-app',
             },
             {
               label: 'API Reference (Survey)',
-              to: '/android-survey/api-reference',
+              to: '/survey',
             },
             {
               label: 'Troubleshooting',
-              to: '/android/troubleshooting',
+              to: '/teste-app',
             },
           ],
         },

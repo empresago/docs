@@ -6,6 +6,12 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Pesquisa In-App',
       collapsed: false,
+      link: {
+        type: 'generated-index',
+        title: 'Pesquisa In-App',
+        description: 'Escolha a plataforma do app para integrar o GoAB Survey SDK.',
+        slug: '/survey',
+      },
       items: [
         {
           type: 'category',
@@ -47,6 +53,12 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Testes A/B',
       collapsed: false,
+      link: {
+        type: 'generated-index',
+        title: 'Teste App',
+        description: 'Escolha a plataforma do app para integrar o GoAB SDK de testes A/B.',
+        slug: '/teste-app',
+      },
       items: [
         {
           type: 'category',
