@@ -8,6 +8,9 @@ const config: Config = {
   title: 'GoAB SDK Docs',
   tagline: 'SDKs para experimentos A/B, configurações remotas e pesquisas in-app',
   favicon: 'img/favicon.png',
+  headTags: [
+    {tagName: 'link', attributes: {rel: 'icon', href: '/img/favicon.ico', sizes: 'any'}},
+  ],
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -57,7 +60,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/goab-social-card.jpg',
     colorMode: {
       respectPrefersColorScheme: true,
     },
