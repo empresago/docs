@@ -26,7 +26,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/survey">
-            Survey
+            Survey App
           </Link>
         </div>
       </div>
