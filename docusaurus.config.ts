@@ -101,20 +101,16 @@ const config: Config = {
           title: 'Recursos',
           items: [
             {
-              label: 'API Reference (A/B)',
-              to: '/android/api-reference',
+              label: 'API Reference (Teste App)',
+              to: '/teste-app',
             },
             {
-              label: 'API Reference (Survey Android)',
-              to: '/android-survey/api-reference',
-            },
-            {
-              label: 'API Reference (Survey iOS)',
-              to: '/ios-survey/api-reference',
+              label: 'API Reference (Survey)',
+              to: '/survey',
             },
             {
               label: 'Troubleshooting',
-              to: '/android/troubleshooting',
+              to: '/teste-app',
             },
           ],
         },
