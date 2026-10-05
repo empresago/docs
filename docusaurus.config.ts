@@ -92,7 +92,7 @@ const config: Config = {
               to: '/teste-app',
             },
             {
-              label: 'Survey',
+              label: 'Survey App',
               to: '/survey',
             },
           ],
@@ -105,7 +105,7 @@ const config: Config = {
               to: '/teste-app',
             },
             {
-              label: 'API Reference (Survey)',
+              label: 'API Reference (Survey App)',
               to: '/survey',
             },
             {
