@@ -80,7 +80,7 @@ const config: Config = {
         {
           type: 'html',
           position: 'right',
-          value: '<a href="/login" class="button button--primary navbar__login-btn">Login</a>',
+          value: '<a href="https://app.goab.io/login" class="button button--primary navbar__login-btn">Login</a>',
         },
       ],
     },
