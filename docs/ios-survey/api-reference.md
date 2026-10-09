@@ -160,7 +160,7 @@ Informa ao SDK que algo aconteceu na app (ex.: o usuário abriu uma tela ou conc
 
 **Comportamento:**
 
-- Ignorado se o SDK não estiver inicializado
+- Se o SDK ainda não terminou o [initialize](#initialize), o evento fica guardado e é enviado assim que o SDK ficar pronto (até 20 eventos, descartando o mais antigo, e só se tiverem menos de 30 segundos). Trocar o usuário com [setUserId](#setuserid) ou chamar [disposeSurvey](#disposesurvey) descarta os eventos guardados
 - Ignorado se já houver uma pesquisa aberta na tela
 
 **Exemplo:**
@@ -198,6 +198,7 @@ Define o ID do usuário logado.
 
 - `nil` ou string em branco remove o usuário
 - Ao mudar o ID, pesquisas abertas são fechadas
+- Sem um usuário definido, o SDK usa um identificador anônimo próprio (gerado e guardado no aparelho) nas chamadas ao servidor; quando você define o usuário, ele passa a valer no lugar do anônimo
 
 ---
 

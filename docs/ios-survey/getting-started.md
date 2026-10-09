@@ -30,7 +30,7 @@ Se o seu projeto usa `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/empresago/goab-survey-sdk-ios", from: "1.2.0")
+    .package(url: "https://github.com/empresago/goab-survey-sdk-ios", from: "1.3.0")
 ]
 ```
 
