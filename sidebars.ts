@@ -4,6 +4,42 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     {
       type: 'category',
+      label: 'Editor Visual',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'editor-visual/introducao',
+      },
+      items: [
+        {
+          type: 'category',
+          label: 'Primeiros passos',
+          items: [
+            'editor-visual/abrir-o-editor',
+            'editor-visual/selecionar-elementos',
+            'editor-visual/arvore-de-elementos',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Editando elementos',
+          items: [
+            'editor-visual/editar-texto',
+            'editor-visual/estilos',
+            'editor-visual/editar-html',
+            'editor-visual/imagem-e-link',
+            'editor-visual/atributos-e-classes',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Recursos',
+          items: ['editor-visual/eventos', 'editor-visual/ver-codigo'],
+        },
+      ],
+    },
+    {
+      type: 'category',
       label: 'Pesquisa In-App',
       collapsed: false,
       link: {

@@ -28,6 +28,11 @@ function HomepageHeader() {
             to="/survey">
             Survey App
           </Link>
+          <Link
+            className="button button--secondary button--lg"
+            to="/editor-visual/introducao">
+            Editor Visual
+          </Link>
         </div>
       </div>
     </header>

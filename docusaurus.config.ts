@@ -98,6 +98,10 @@ const config: Config = {
               label: 'Survey App',
               to: '/survey',
             },
+            {
+              label: 'Editor Visual',
+              to: '/editor-visual/introducao',
+            },
           ],
         },
         {
