@@ -70,6 +70,12 @@ Também dá para começar pelo elemento: selecione-o, abra o menu do elemento (�
 
 ![Pergunta sobre onde inserir o novo bloco](/img/editor-visual/biblioteca-de-elementos/07-novo-bloco-bruto.png)
 
+## Excluir da Biblioteca
+
+Na lista, clique na **lixeira** do elemento. Ele sai da lista na hora e o editor avisa **Elemento excluído**. A exclusão vale para a Biblioteca da conta e continua valendo ao reabrir a lista com **Atualizar**.
+
+Isso remove apenas a cópia guardada: a página e as variantes não mudam. Se o painel não conseguir excluir, o editor avisa **Erro ao excluir elemento** e a lista volta a mostrar o elemento.
+
 ## Resultado
 
 Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia).
