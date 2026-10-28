@@ -23,6 +23,17 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
+    title: 'Editor Visual',
+    Svg: require('@site/static/img/variants_image.png').default,
+    description: (
+      <>
+        Monte as variantes dos seus testes A/B clicando direto no site: edite textos,
+        estilos, imagens e estrutura sem escrever código.{' '}
+        <Link to="/editor-visual/introducao">Veja como usar</Link>.
+      </>
+    ),
+  },
+  {
     title: 'Fácil de Usar',
     Svg: require('@site/static/img/metric_image.svg').default,
     description: (
