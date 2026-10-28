@@ -69,6 +69,38 @@ Remove o elemento da variante. Como é uma ação mais forte, o editor pede conf
 
    A janela lembra que dá para desfazer logo em seguida com `Ctrl+Z`.
 
+## Resultado
+
+Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia).
+
+### Ocultar e mover
+
+Neste exemplo, o botão **Conhecer a plataforma** foi ocultado e o parágrafo foi movido para baixo do botão **Ver planos**.
+
+**Controle (antes):**
+
+![Controle com a ordem original](/img/editor-visual/esconder-remover-mover-duplicar/resultado-antes.png)
+
+**Variante (depois):**
+
+![Variante com o parágrafo movido e um botão oculto](/img/editor-visual/esconder-remover-mover-duplicar/resultado-depois.png)
+
+1. O parágrafo, agora depois do botão.
+2. O botão **Ver planos**, que subiu. O botão **Conhecer a plataforma** não aparece mais.
+
+### Copiar
+
+**Controle (antes):**
+
+![Controle com um único parágrafo](/img/editor-visual/esconder-remover-mover-duplicar/resultado-duplicar-antes.png)
+
+**Variante (depois):**
+
+![Variante com o parágrafo duplicado](/img/editor-visual/esconder-remover-mover-duplicar/resultado-duplicar-depois.png)
+
+1. O parágrafo original.
+2. A cópia, logo depois dele.
+
 ## Qual usar?
 
 | Quero… | Use |

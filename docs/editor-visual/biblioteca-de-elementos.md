@@ -69,3 +69,18 @@ O elemento inserido é como qualquer outro da variante: você pode [editar o tex
 Também dá para começar pelo elemento: selecione-o, abra o menu do elemento (⋯) e clique em **Inserir novo bloco**. O editor pergunta **Onde inserir o novo bloco?**, com as opções **Antes do elemento** e **Depois do elemento**.
 
 ![Pergunta sobre onde inserir o novo bloco](/img/editor-visual/biblioteca-de-elementos/07-novo-bloco-bruto.png)
+
+## Resultado
+
+Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia).
+
+**Controle (antes):**
+
+![Controle com um parágrafo](/img/editor-visual/biblioteca-de-elementos/resultado-antes.png)
+
+**Variante (depois):**
+
+![Variante com o elemento da Biblioteca inserido](/img/editor-visual/biblioteca-de-elementos/resultado-depois.png)
+
+1. O elemento original.
+2. O elemento inserido da Biblioteca, logo depois dele.

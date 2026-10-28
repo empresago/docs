@@ -28,6 +28,22 @@ Para remover um evento, clique no **X** ao lado da linha.
 Os eventos funcionam na variante publicada, para os visitantes. Para conferir, publique o teste e acesse a variante pelo link de visualização.
 :::
 
+## Resultado
+
+Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia) e clique no elemento. Neste exemplo, a etiqueta **PLATAFORMA DE EXPERIMENTAÇÃO E CRO** recebeu o evento **Clique → Ocultar**.
+
+**Antes do clique:**
+
+![Variante com a etiqueta visível](/img/editor-visual/eventos/resultado-antes-do-clique.png)
+
+1. O elemento que recebeu o evento.
+
+**Depois do clique:**
+
+![Variante com a etiqueta oculta depois do clique](/img/editor-visual/eventos/resultado-depois-do-clique.png)
+
+A etiqueta desapareceu e o conteúdo abaixo subiu.
+
 ## Próximo passo
 
 Veja o código que o editor gera em [Ver código](./ver-codigo).

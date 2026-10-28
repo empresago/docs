@@ -74,6 +74,20 @@ Para qualquer propriedade CSS que não esteja nos outros grupos, abra **Personal
 
 Use **Desfazer** (`Ctrl+Z`) na barra do editor para voltar uma alteração, ou **Descartar** no painel para abandonar o que ainda não foi aplicado.
 
+## Resultado
+
+Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia). Aqui, o tamanho do texto foi aumentado para 28 px.
+
+**Controle (antes):**
+
+![Controle com o tamanho de texto original](/img/editor-visual/estilos/resultado-antes.png)
+
+**Variante (depois):**
+
+![Variante com o texto maior](/img/editor-visual/estilos/resultado-depois.png)
+
+1. O mesmo parágrafo, agora com o novo tamanho.
+
 ## Próximo passo
 
 Veja como editar o [HTML do elemento](./editar-html).

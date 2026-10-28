@@ -42,3 +42,17 @@ O menu do elemento (⋯ na [barra rápida](./selecionar-elementos#menu-do-elemen
 
 - Alterações de HTML valem para o **elemento selecionado**; confira o resultado na página antes de salvar.
 - Prefira os campos de [texto](./editar-texto) e [estilos](./estilos) quando eles resolvem: são mais simples de manter.
+
+## Resultado
+
+Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia). Neste exemplo, o HTML do parágrafo foi trocado por uma versão com uma parte em negrito.
+
+**Controle (antes):**
+
+![Controle com o parágrafo original](/img/editor-visual/editar-html/resultado-antes.png)
+
+**Variante (depois):**
+
+![Variante com o HTML alterado](/img/editor-visual/editar-html/resultado-depois.png)
+
+1. O parágrafo com o novo HTML (o trecho em negrito).

@@ -26,6 +26,20 @@ Depois de [salvar a variante](./salvar-e-desfazer) no editor, volte ao painel da
 
    ![Aviso de experimento publicado com sucesso](/img/editor-visual/publicar-no-painel/03-publicado-bruto.png)
 
+## Conferir o resultado pelo link de prévia
+
+Antes de divulgar, veja a variante publicada exatamente como o visitante verá. Nas outras páginas desta documentação, a seção **Resultado** usa esse mesmo caminho.
+
+1. Na etapa **Variantes** do teste, clique nas **três bolinhas (⋮)** da variante e em **Link de compartilhamento**. O link é copiado.
+2. Cole o link no navegador. Abre a tela de **Prévia** do teste, com a lista de variantes.
+3. Confira a **URL do teste** (a página do seu site onde a variante deve aparecer) e clique em **Abrir variante** na variante que quer ver. Use **Abrir variante** no Controle para comparar com a página original.
+
+O site abre em uma nova janela, com a caixa **GoAB Prévia** no canto. Ela indica a variante em exibição e avisa **Variante aplicada (prévia)** quando as alterações estão ativas.
+
+:::warning Só aparece o que foi publicado
+A prévia mostra a variante **publicada**. Se a caixa disser «Variante aplicada (prévia): nenhuma modificação na página», as suas alterações foram salvas no editor, mas ainda não publicadas: [publique](#passo-a-passo) e abra a variante de novo.
+:::
+
 ## Conferir no site
 
 Depois de publicar, os visitantes sorteados para a variante passam a ver as suas alterações.

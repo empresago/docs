@@ -46,6 +46,20 @@ Elementos que levam para outra página (links e botões-link, como **Ver planos*
 A imagem precisa estar publicada em um endereço acessível pelo seu site. O editor não envia arquivos: ele usa o endereço que você informar em **Src**.
 :::
 
+## Resultado
+
+Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia). Neste exemplo, o texto do botão **Ver planos** foi trocado.
+
+**Controle (antes):**
+
+![Controle com o botão original](/img/editor-visual/imagem-e-link/resultado-antes.png)
+
+**Variante (depois):**
+
+![Variante com o texto do botão alterado](/img/editor-visual/imagem-e-link/resultado-depois.png)
+
+1. O botão com o novo texto. O destino do link continua o mesmo, a menos que você altere o **Href**.
+
 ## Próximo passo
 
 Para ajustar o visual de um elemento, veja [Estilos](./estilos). Para atributos que não têm campo próprio, veja [Atributos e classes](./atributos-e-classes).

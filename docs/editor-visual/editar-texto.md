@@ -56,6 +56,20 @@ Clique em um atalho para aplicar na hora. Por exemplo, ao clicar em **negrito**,
 
 Para fechar o menu, clique outra vez em **Estilos**. Se não gostar do resultado, use **Desfazer** na barra do editor.
 
+## Resultado
+
+Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia). O **Controle** mostra a página original; a variante mostra o texto novo.
+
+**Controle (antes):**
+
+![Controle com o texto original](/img/editor-visual/editar-texto/resultado-antes.png)
+
+**Variante (depois):**
+
+![Variante com o texto alterado](/img/editor-visual/editar-texto/resultado-depois.png)
+
+1. O texto alterado, e a caixa **GoAB Prévia** confirmando **Variante aplicada (prévia)**.
+
 ## Próximo passo
 
 Para mudar tamanho, cor, espaçamento e outros detalhes visuais, veja [Estilos](./estilos).

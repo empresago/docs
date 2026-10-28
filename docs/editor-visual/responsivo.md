@@ -56,6 +56,20 @@ Com o dispositivo escolhido, [selecione um elemento](./selecionar-elementos) e e
 Para voltar ao tamanho da tela, abra a lista de dispositivos e escolha **Desktop**.
 :::
 
+## Resultado
+
+Alterações feitas no tamanho de celular valem para a variante (não só para a simulação). Depois de [salvar](./salvar-e-desfazer) e [publicar](./publicar-no-painel), abra a variante pelo [link de prévia](./publicar-no-painel#conferir-o-resultado-pelo-link-de-prévia) em uma janela de celular.
+
+**Controle (antes):**
+
+![Controle no tamanho de celular](/img/editor-visual/responsivo/resultado-antes.png)
+
+**Variante (depois):**
+
+![Variante no tamanho de celular, com o texto alterado](/img/editor-visual/responsivo/resultado-depois.png)
+
+1. O texto alterado, exibido no tamanho de celular.
+
 ## Próximo passo
 
 Veja como [trocar de variante](./variantes) e [salvar suas alterações](./salvar-e-desfazer).
