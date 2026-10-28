@@ -29,12 +29,27 @@ const sidebars: SidebarsConfig = {
             'editor-visual/editar-html',
             'editor-visual/imagem-e-link',
             'editor-visual/atributos-e-classes',
+            'editor-visual/esconder-remover-mover-duplicar',
           ],
         },
         {
           type: 'category',
           label: 'Recursos',
-          items: ['editor-visual/eventos', 'editor-visual/ver-codigo'],
+          items: [
+            'editor-visual/biblioteca-de-elementos',
+            'editor-visual/eventos',
+            'editor-visual/ver-codigo',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Responsivo, variantes e publicação',
+          items: [
+            'editor-visual/responsivo',
+            'editor-visual/variantes',
+            'editor-visual/salvar-e-desfazer',
+            'editor-visual/publicar-no-painel',
+          ],
         },
       ],
     },
