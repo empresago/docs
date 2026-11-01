@@ -18,7 +18,7 @@ Sim. O controle é tratado como qualquer outra variante: se uma variante for cla
 
 ## Por que o peso de uma variante às vezes recua?
 
-Dois motivos: a candidata perdeu confiança (probabilidade abaixo de 80%), ou ela acabou de confirmar o primeiro degrau, cujo alvo (60%) pode ser menor que o peso que ela já tinha no regime proporcional. Veja o [exemplo](./como-funciona#exemplo).
+Porque a variante líder perdeu confiança: a probabilidade dela de ser a melhor caiu abaixo de 80%, e ela desceu um degrau. Enquanto a evidência se mantém, o peso da líder só sobe. Veja o [exemplo](./como-funciona#exemplo).
 
 ## O teste termina quando uma variante chega a 100%?
 
