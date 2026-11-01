@@ -83,11 +83,14 @@ Cada variante recebe um **piso de 5%**. O restante, 100% menos os pisos, é divi
 peso_alvo = 5% + (probabilidade da variante / soma das probabilidades) × (100% − nº de variantes × 5%)
 ```
 
+Enquanto não há vencedora confirmada, **nenhuma variante passa de 60%**, o peso do primeiro degrau. O que passaria disso é repartido entre as demais, na proporção da probabilidade delas.
+
 Com Controle 3% e B 97%, em duas variantes:
 
 ```text
 Controle = 5% + 0,03 × 90% = 7,7%
-B        = 5% + 0,97 × 90% = 92,3%
+B        = 5% + 0,97 × 90% = 92,3%  → limitado a 60%
+Controle                            → recebe o excesso: 40%
 ```
 
 O piso garante que nenhuma variante saia do jogo por causa de um começo ruim: ela continua recebendo dados e pode se recuperar.
@@ -121,9 +124,9 @@ Controle e B partem de 50%/50%, e a B tem 97% de probabilidade de ser a melhor e
 
 | Ciclo | Candidata | Ciclos confirmados | Degrau | Controle | B |
 |---|---|---|---|---|---|
-| 1 | B | 1 | nenhum | 35% | 65% |
-| 2 | B | 2 | nenhum | 20% | 80% |
-| 3 | B | 3, sobe | 60% | 35% | 65% |
+| 1 | B | 1 | nenhum | 40% | 60% |
+| 2 | B | 2 | nenhum | 40% | 60% |
+| 3 | B | 3, sobe | 60% | 40% | 60% |
 | 4 | B | 1 | 60% | 40% | 60% |
 | 5 | B | 2 | 60% | 40% | 60% |
 | 6 | B | 3, sobe | 80% | 25% | 75% |

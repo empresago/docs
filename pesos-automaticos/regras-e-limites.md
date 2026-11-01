@@ -39,6 +39,7 @@ As demais variantes dividem o restante.
 | Regra | Valor | O que significa |
 |---|---|---|
 | Piso por variante | 5% | Peso mínimo de cada variante enquanto não há degrau (o controle também). |
+| Teto sem degrau | 60% | Enquanto nenhuma variante confirmou o primeiro degrau, nenhuma passa de 60%. |
 | Passo máximo | 15 pontos percentuais | Quanto um peso pode mudar em um único ajuste. |
 
 ## Quanto tempo leva

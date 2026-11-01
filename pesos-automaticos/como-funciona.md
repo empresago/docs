@@ -22,7 +22,7 @@ Com os pesos automáticos ligados, a GoAB repete um **ciclo** para cada teste at
 
 | Regime | Quando | O que acontece com os pesos |
 |---|---|---|
-| **Proporcional** | Ainda não há candidata confirmada | Cada variante recebe pelo menos 5%, e o restante é dividido na proporção da probabilidade de ser a melhor. |
+| **Proporcional** | Ainda não há candidata confirmada | Cada variante recebe pelo menos 5%, e o restante é dividido na proporção da probabilidade de ser a melhor. Nenhuma variante passa de **60%** nesse regime. |
 | **Degraus** | A candidata passou a ser confirmada | A candidata fica com o peso do degrau: **60%**, depois **80%** e, por fim, **100%**. As demais dividem o restante. |
 
 ## Subir e descer degraus
@@ -41,20 +41,18 @@ Teste com duas variantes, começando em 50% e 50%. A variante B é claramente me
 | Ciclo | Controle | Variante B | O que aconteceu |
 |---|---|---|---|
 | início | 50% | 50% | Pesos definidos por você. |
-| 1 | 35% | 65% | Regime proporcional. O passo máximo de 15 pontos limita a mudança. |
-| 2 | 20% | 80% | B confirmada pela 2ª vez. |
-| 3 | 35% | 65% | B confirmada pela 3ª vez e sobe ao **degrau de 60%**. O alvo passa a ser 60%, e o peso recua de 80% para 65%. |
+| 1 | 40% | 60% | A B é a candidata, mas ainda não confirmada: nenhuma variante passa de 60%. |
+| 2 | 40% | 60% | B confirmada pela 2ª vez. |
+| 3 | 40% | 60% | B confirmada pela 3ª vez e sobe ao **degrau de 60%**. |
 | 4 a 5 | 40% | 60% | Confirmando para o próximo degrau. |
-| 6 | 25% | 75% | Sobe ao degrau de **80%**. |
+| 6 | 25% | 75% | Sobe ao degrau de **80%**. O passo máximo de 15 pontos limita a mudança. |
 | 7 a 8 | 20% | 80% | Confirmando. |
 | 9 | 5% | 95% | Sobe ao degrau de **100%**, limitado pelo passo máximo. |
 | 10 | 0% | 100% | Vencedora em tempo integral. |
 
 ![Trajetória dos pesos ciclo a ciclo](/img/pesos-automaticos/trajetoria.svg)
 
-:::note Nota
-O peso da B recua no ciclo 3. Isso acontece porque, ao confirmar a candidata, o alvo deixa de ser a proporção de probabilidade (92%, neste caso) e passa a ser o do primeiro degrau (60%).
-:::
+O peso da variante líder só sobe: ela não passa de 60% antes de confirmar o primeiro degrau, e não passa de 80% antes de confirmar o segundo.
 
 ## O que os pesos automáticos não fazem
 

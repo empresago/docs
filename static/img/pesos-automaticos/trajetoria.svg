@@ -30,12 +30,12 @@
 <text x="445.6" y="54" fill="#d98a00" font-size="12">degrau 80%</text>
 <line x1="632.4" y1="40" x2="632.4" y2="324" stroke="#d98a00" stroke-dasharray="4 4" opacity="0.8"/>
 <text x="636.4" y="54" fill="#d98a00" font-size="12">degrau 100%</text>
-<path d="M60.0,182.0 L123.6,139.4 L187.2,96.8 L250.8,139.4 L314.4,153.6 L378.0,153.6 L441.6,111.0 L505.2,96.8 L568.8,96.8 L632.4,54.2 L696.0,40.0" fill="none" stroke="#2f6fed" stroke-width="3"/>
-<path d="M60.0,182.0 L123.6,224.6 L187.2,267.2 L250.8,224.6 L314.4,210.4 L378.0,210.4 L441.6,253.0 L505.2,267.2 L568.8,267.2 L632.4,309.8 L696.0,324.0" fill="none" stroke="#e0533d" stroke-width="3"/>
+<path d="M60.0,182.0 L123.6,153.6 L187.2,153.6 L250.8,153.6 L314.4,153.6 L378.0,153.6 L441.6,111.0 L505.2,96.8 L568.8,96.8 L632.4,54.2 L696.0,40.0" fill="none" stroke="#2f6fed" stroke-width="3"/>
+<path d="M60.0,182.0 L123.6,210.4 L187.2,210.4 L250.8,210.4 L314.4,210.4 L378.0,210.4 L441.6,253.0 L505.2,267.2 L568.8,267.2 L632.4,309.8 L696.0,324.0" fill="none" stroke="#e0533d" stroke-width="3"/>
 <circle cx="60.0" cy="182.0" r="3.5" fill="#2f6fed"/>
-<circle cx="123.6" cy="139.4" r="3.5" fill="#2f6fed"/>
-<circle cx="187.2" cy="96.8" r="3.5" fill="#2f6fed"/>
-<circle cx="250.8" cy="139.4" r="3.5" fill="#2f6fed"/>
+<circle cx="123.6" cy="153.6" r="3.5" fill="#2f6fed"/>
+<circle cx="187.2" cy="153.6" r="3.5" fill="#2f6fed"/>
+<circle cx="250.8" cy="153.6" r="3.5" fill="#2f6fed"/>
 <circle cx="314.4" cy="153.6" r="3.5" fill="#2f6fed"/>
 <circle cx="378.0" cy="153.6" r="3.5" fill="#2f6fed"/>
 <circle cx="441.6" cy="111.0" r="3.5" fill="#2f6fed"/>
@@ -44,9 +44,9 @@
 <circle cx="632.4" cy="54.2" r="3.5" fill="#2f6fed"/>
 <circle cx="696.0" cy="40.0" r="3.5" fill="#2f6fed"/>
 <circle cx="60.0" cy="182.0" r="3.5" fill="#e0533d"/>
-<circle cx="123.6" cy="224.6" r="3.5" fill="#e0533d"/>
-<circle cx="187.2" cy="267.2" r="3.5" fill="#e0533d"/>
-<circle cx="250.8" cy="224.6" r="3.5" fill="#e0533d"/>
+<circle cx="123.6" cy="210.4" r="3.5" fill="#e0533d"/>
+<circle cx="187.2" cy="210.4" r="3.5" fill="#e0533d"/>
+<circle cx="250.8" cy="210.4" r="3.5" fill="#e0533d"/>
 <circle cx="314.4" cy="210.4" r="3.5" fill="#e0533d"/>
 <circle cx="378.0" cy="210.4" r="3.5" fill="#e0533d"/>
 <circle cx="441.6" cy="253.0" r="3.5" fill="#e0533d"/>
