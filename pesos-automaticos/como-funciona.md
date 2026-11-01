@@ -52,6 +52,8 @@ Teste com duas variantes, começando em 50% e 50%. A variante B é claramente me
 
 ![Trajetória dos pesos ciclo a ciclo](/img/pesos-automaticos/trajetoria.svg)
 
+As linhas tracejadas marcam o ciclo em que a líder **confirma** o degrau. O peso chega ao valor do degrau no mesmo ciclo ou no seguinte, porque nenhuma variante muda mais que 15 pontos por ciclo: por isso a B está em 75% no ciclo 6 (confirmação do degrau de 80%) e chega a 80% no ciclo 7.
+
 O peso da variante líder só sobe: ela não passa de 60% antes de confirmar o primeiro degrau, e não passa de 80% antes de confirmar o segundo.
 
 ## O que os pesos automáticos não fazem
