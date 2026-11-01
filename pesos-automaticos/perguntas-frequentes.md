@@ -14,7 +14,7 @@ Não. Com os pesos automáticos ligados, os controles de peso ficam bloqueados. 
 
 ## O controle também perde tráfego?
 
-Sim. O controle é tratado como qualquer outra variante: se uma variante for claramente melhor, o controle recebe menos tráfego, podendo chegar a 0% no último degrau.
+Sim. O controle é tratado como qualquer outra variante: se uma variante for claramente melhor, o controle recebe menos tráfego, podendo chegar a 0% no último degrau. Nesse caso o painel avisa: "Com o controle em 0%, o teste não terá base de comparação nos resultados." Veja [Acompanhando](./acompanhando).
 
 ## Por que o peso de uma variante às vezes recua?
 

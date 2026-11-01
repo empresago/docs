@@ -22,7 +22,7 @@ Com os **pesos automáticos**, a GoAB reavalia os resultados de tempos em tempos
 |---|---|
 | **Métrica primária** | É a única métrica usada para decidir os pesos. As secundárias não entram na conta. |
 | **Maior é melhor** | Diz se, na métrica primária, um valor maior é melhor (por exemplo, compras) ou menor é melhor (por exemplo, tempo até a compra). |
-| **Pesos automáticos** | Liga o ajuste automático no passo **Audiência** do teste. |
+| **Ajustar pesos automaticamente** | Liga o ajuste automático no passo **Audiência** do teste. |
 | **Ciclo de ajuste** | A cada rodada, a GoAB recalcula as probabilidades e, se houver motivo, move o tráfego. |
 
 ## Onde funciona
@@ -43,10 +43,11 @@ Com os pesos automáticos ligados, os controles de peso manual ficam bloqueados.
 
 No painel, ao criar ou editar o teste:
 
-- No passo **Audiência**, ligue **Pesos automáticos**, ao lado da opção **Distribuir igualmente**. As duas opções são exclusivas.
+- No passo **Audiência**, ligue **Ajustar pesos automaticamente**, à direita da opção **Distribuir igualmente**. As duas opções são exclusivas.
 - Na **métrica primária**, confira **Maior é melhor**: ela diz em que direção a métrica melhora.
 
 ## Próximos passos
 
+- [Como ligar](./como-ligar): o passo a passo no painel, com prints.
 - [Como funciona](./como-funciona): o que acontece em cada ciclo.
 - [A estatística](./a-estatistica): como a probabilidade de ser a melhor é calculada, com um exemplo numérico completo.
