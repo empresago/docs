@@ -58,6 +58,18 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'pesos-automaticos',
+        path: 'pesos-automaticos',
+        routeBasePath: 'pesos-automaticos',
+        sidebarPath: './sidebars-pesos-automaticos.ts',
+      },
+    ],
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/goab-social-card.jpg',
@@ -76,6 +88,13 @@ const config: Config = {
           sidebarId: 'tutorialSidebar',
           position: 'left',
           label: 'Documentação',
+        },
+        {
+          type: 'docSidebar',
+          docsPluginId: 'pesos-automaticos',
+          sidebarId: 'pesosAutomaticosSidebar',
+          position: 'left',
+          label: 'Pesos automáticos',
         },
         {
           type: 'html',
@@ -101,6 +120,15 @@ const config: Config = {
             {
               label: 'Editor Visual',
               to: '/editor-visual/introducao',
+            },
+          ],
+        },
+        {
+          title: 'Guias',
+          items: [
+            {
+              label: 'Pesos automáticos',
+              to: '/pesos-automaticos',
             },
           ],
         },
