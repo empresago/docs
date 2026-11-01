@@ -6,7 +6,7 @@ sidebar_position: 7
 
 ## Ligar os pesos automáticos muda os pesos na hora?
 
-Não. Os pesos continuam como estão até o teste atingir o [mínimo de visitantes e conversões](./parametros) e o primeiro ciclo de decisão acontecer.
+Não. Os pesos continuam como estão até o teste atingir o [mínimo de visitantes e conversões](./regras-e-limites) e o primeiro ciclo de decisão acontecer.
 
 ## Posso ajustar os pesos manualmente com os pesos automáticos ligados?
 
@@ -44,7 +44,7 @@ Duas ou mais, contando o controle.
 
 As causas mais comuns:
 
-- O teste ainda não atingiu o [mínimo de visitantes](./parametros) em cada variante, ou o mínimo de conversões somadas.
+- O teste ainda não atingiu o [mínimo de visitantes](./regras-e-limites) em cada variante, ou o mínimo de conversões somadas.
 - Passaram menos de 6 horas desde o último ajuste.
 - O teste não está ativo.
 - O recurso de peso por variante não está habilitado na conta.

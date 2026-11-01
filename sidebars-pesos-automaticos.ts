@@ -5,7 +5,7 @@ const sidebars: SidebarsConfig = {
     'introducao',
     'como-funciona',
     'a-estatistica',
-    'parametros',
+    'regras-e-limites',
     'perguntas-frequentes',
   ],
 };

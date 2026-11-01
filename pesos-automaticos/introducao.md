@@ -33,7 +33,7 @@ Os pesos automáticos funcionam em testes **A/B** e **Split** da web, com duas o
 
 1. O recurso de **peso por variante** habilitado na sua conta.
 2. Um teste A/B ou Split com uma **métrica primária** definida.
-3. Visitantes e conversões suficientes. Antes de atingir o [mínimo de amostra](./parametros), nada muda.
+3. Visitantes e conversões suficientes. Antes de atingir o [mínimo de amostra](./regras-e-limites), nada muda.
 
 :::info Pesos manuais e automáticos não se misturam
 Com os pesos automáticos ligados, os controles de peso manual ficam bloqueados. Para voltar a definir os pesos à mão, desligue os pesos automáticos.

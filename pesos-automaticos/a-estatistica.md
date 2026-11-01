@@ -94,7 +94,7 @@ O piso garante que nenhuma variante saia do jogo por causa de um começo ruim: e
 
 ### Regime de degraus (vencedora confirmada)
 
-Quando a candidata fica acima de **95%** de probabilidade em **3 ciclos seguidos**, ela sobe um degrau. O peso dela passa a ser fixo no degrau:
+Quando a candidata fica acima de **95%** de probabilidade em **3 ciclos seguidos**, ela sobe um degrau. Os degraus são fixos e o peso dela passa a ser o do degrau:
 
 | Degrau | Peso da vencedora |
 |---|---|
@@ -137,5 +137,5 @@ Cada linha é uma decisão do ciclo: o alvo vem do regime, e o passo máximo de 
 
 - **É um método adaptativo, não um teste de hipótese.** Ele existe para **reduzir o custo** de mostrar uma variante pior, e não para declarar um vencedor com um nível de significância definido. Para a decisão final, use a tela de resultados.
 - **Só a métrica primária decide.** Uma variante pode ganhar na primária e perder em outra métrica. Os pesos automáticos não enxergam isso.
-- **A amostra mínima vale.** Antes de [atingir o mínimo](./parametros), a GoAB não mexe nos pesos. Com poucos dados, a probabilidade oscila muito.
+- **A amostra mínima vale.** Antes de [atingir o mínimo](./regras-e-limites), a GoAB não mexe nos pesos. Com poucos dados, a probabilidade oscila muito.
 - **A qualidade da métrica importa.** Se a conversão da métrica primária estiver mal configurada, os pesos seguem o erro.

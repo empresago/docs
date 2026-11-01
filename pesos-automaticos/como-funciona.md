@@ -9,7 +9,7 @@ Com os pesos automáticos ligados, a GoAB repete um **ciclo** para cada teste at
 ## O ciclo, passo a passo
 
 1. **Lê os dados da métrica primária.** Visitantes e conversões de cada variante.
-2. **Confere a amostra mínima.** Se alguma variante tem poucos visitantes, ou se há poucas conversões no total, o ciclo termina sem mudar nada. Veja [Parâmetros](./parametros).
+2. **Confere a amostra mínima.** Se alguma variante tem poucos visitantes, ou se há poucas conversões no total, o ciclo termina sem mudar nada. Veja [Regras e limites](./regras-e-limites).
 3. **Respeita o intervalo entre ajustes.** Se o último ajuste foi recente, o ciclo espera.
 4. **Calcula a probabilidade de cada variante ser a melhor.** Veja [A estatística](./a-estatistica).
 5. **Atualiza a candidata a vencedora.** A variante com maior probabilidade é a candidata. Cada vez que ela se mantém acima de 95% em ciclos seguidos, ela sobe um **degrau**.
@@ -26,6 +26,8 @@ Com os pesos automáticos ligados, a GoAB repete um **ciclo** para cada teste at
 | **Degraus** | A candidata passou a ser confirmada | A candidata fica com o peso do degrau: **60%**, depois **80%** e, por fim, **100%**. As demais dividem o restante. |
 
 ## Subir e descer degraus
+
+Os degraus são fixos: 60%, 80% e 100% para todos os testes.
 
 - A candidata sobe um degrau quando a probabilidade dela ser a melhor fica **igual ou acima de 95% por 3 ciclos seguidos**.
 - Se a probabilidade cair **abaixo de 80%**, ela **desce um degrau**. No primeiro degrau, volta ao regime proporcional.
