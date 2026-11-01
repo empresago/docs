@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" role="img" aria-label="Pesos do controle e da variante B ao longo de 10 ciclos" font-family="system-ui,sans-serif" font-size="13">
+<text x="60" y="22" font-size="15" font-weight="600" fill="currentColor">Peso de cada variante por ciclo</text>
+<line x1="60" y1="324.0" x2="696" y2="324.0" stroke="currentColor" opacity="0.15"/>
+<text x="52" y="328.0" text-anchor="end" fill="currentColor" opacity="0.7">0%</text>
+<line x1="60" y1="267.2" x2="696" y2="267.2" stroke="currentColor" opacity="0.15"/>
+<text x="52" y="271.2" text-anchor="end" fill="currentColor" opacity="0.7">20%</text>
+<line x1="60" y1="210.4" x2="696" y2="210.4" stroke="currentColor" opacity="0.15"/>
+<text x="52" y="214.4" text-anchor="end" fill="currentColor" opacity="0.7">40%</text>
+<line x1="60" y1="153.6" x2="696" y2="153.6" stroke="currentColor" opacity="0.15"/>
+<text x="52" y="157.6" text-anchor="end" fill="currentColor" opacity="0.7">60%</text>
+<line x1="60" y1="96.8" x2="696" y2="96.8" stroke="currentColor" opacity="0.15"/>
+<text x="52" y="100.8" text-anchor="end" fill="currentColor" opacity="0.7">80%</text>
+<line x1="60" y1="40.0" x2="696" y2="40.0" stroke="currentColor" opacity="0.15"/>
+<text x="52" y="44.0" text-anchor="end" fill="currentColor" opacity="0.7">100%</text>
+<text x="60.0" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">início</text>
+<text x="123.6" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">1</text>
+<text x="187.2" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">2</text>
+<text x="250.8" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">3</text>
+<text x="314.4" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">4</text>
+<text x="378.0" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">5</text>
+<text x="441.6" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">6</text>
+<text x="505.2" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">7</text>
+<text x="568.8" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">8</text>
+<text x="632.4" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">9</text>
+<text x="696.0" y="344" text-anchor="middle" fill="currentColor" opacity="0.7">10</text>
+<text x="378.0" y="368" text-anchor="middle" fill="currentColor" opacity="0.7">Ciclo de ajuste</text>
+<line x1="250.8" y1="40" x2="250.8" y2="324" stroke="#d98a00" stroke-dasharray="4 4" opacity="0.8"/>
+<text x="254.8" y="54" fill="#d98a00" font-size="12">degrau 60%</text>
+<line x1="441.6" y1="40" x2="441.6" y2="324" stroke="#d98a00" stroke-dasharray="4 4" opacity="0.8"/>
+<text x="445.6" y="54" fill="#d98a00" font-size="12">degrau 80%</text>
+<line x1="632.4" y1="40" x2="632.4" y2="324" stroke="#d98a00" stroke-dasharray="4 4" opacity="0.8"/>
+<text x="636.4" y="54" fill="#d98a00" font-size="12">degrau 100%</text>
+<path d="M60.0,182.0 L123.6,139.4 L187.2,96.8 L250.8,139.4 L314.4,153.6 L378.0,153.6 L441.6,111.0 L505.2,96.8 L568.8,96.8 L632.4,54.2 L696.0,40.0" fill="none" stroke="#2f6fed" stroke-width="3"/>
+<path d="M60.0,182.0 L123.6,224.6 L187.2,267.2 L250.8,224.6 L314.4,210.4 L378.0,210.4 L441.6,253.0 L505.2,267.2 L568.8,267.2 L632.4,309.8 L696.0,324.0" fill="none" stroke="#e0533d" stroke-width="3"/>
+<circle cx="60.0" cy="182.0" r="3.5" fill="#2f6fed"/>
+<circle cx="123.6" cy="139.4" r="3.5" fill="#2f6fed"/>
+<circle cx="187.2" cy="96.8" r="3.5" fill="#2f6fed"/>
+<circle cx="250.8" cy="139.4" r="3.5" fill="#2f6fed"/>
+<circle cx="314.4" cy="153.6" r="3.5" fill="#2f6fed"/>
+<circle cx="378.0" cy="153.6" r="3.5" fill="#2f6fed"/>
+<circle cx="441.6" cy="111.0" r="3.5" fill="#2f6fed"/>
+<circle cx="505.2" cy="96.8" r="3.5" fill="#2f6fed"/>
+<circle cx="568.8" cy="96.8" r="3.5" fill="#2f6fed"/>
+<circle cx="632.4" cy="54.2" r="3.5" fill="#2f6fed"/>
+<circle cx="696.0" cy="40.0" r="3.5" fill="#2f6fed"/>
+<circle cx="60.0" cy="182.0" r="3.5" fill="#e0533d"/>
+<circle cx="123.6" cy="224.6" r="3.5" fill="#e0533d"/>
+<circle cx="187.2" cy="267.2" r="3.5" fill="#e0533d"/>
+<circle cx="250.8" cy="224.6" r="3.5" fill="#e0533d"/>
+<circle cx="314.4" cy="210.4" r="3.5" fill="#e0533d"/>
+<circle cx="378.0" cy="210.4" r="3.5" fill="#e0533d"/>
+<circle cx="441.6" cy="253.0" r="3.5" fill="#e0533d"/>
+<circle cx="505.2" cy="267.2" r="3.5" fill="#e0533d"/>
+<circle cx="568.8" cy="267.2" r="3.5" fill="#e0533d"/>
+<circle cx="632.4" cy="309.8" r="3.5" fill="#e0533d"/>
+<circle cx="696.0" cy="324.0" r="3.5" fill="#e0533d"/>
+<rect x="506" y="254" width="14" height="4" fill="#2f6fed"/><text x="526" y="259" fill="currentColor">Variante B (vencedora)</text>
+<rect x="506" y="274" width="14" height="4" fill="#e0533d"/><text x="526" y="279" fill="currentColor">Controle</text>
+</svg>
