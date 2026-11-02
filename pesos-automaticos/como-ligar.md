@@ -12,10 +12,6 @@ Você liga os pesos automáticos no passo **Audiência** do teste e confere a di
 - O teste precisa ter **duas ou mais variantes já salvas**. O card de pesos só aparece com elas.
 - Defina uma **métrica primária**: é a única que decide os pesos.
 
-:::caution Em um teste que acabou de ser criado, salve antes de ligar
-Se o teste ainda não foi salvo no passo **Audiência**, clique em **Salvar** uma vez **antes** de ligar **Ajustar pesos automaticamente**. Ligando antes, o painel pode recusar o salvamento seguinte com o aviso "Os pesos automáticos estão ligados: desligue-os para editar os pesos das variantes".
-:::
-
 ## 1. Abra o card Peso das variantes
 
 No passo **Audiência**, role até o card **Peso das variantes**.
