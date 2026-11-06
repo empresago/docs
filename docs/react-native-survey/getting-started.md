@@ -19,7 +19,24 @@ Configure o GoAB Survey SDK na sua aplicação React Native.
 npm install @goab_ltda/survey-sdk-react-native react-native-webview @react-native-async-storage/async-storage
 ```
 
-## 2. Criar a instância
+## 2. Instalar o bridge nativo
+
+O SDK inclui um **módulo nativo mínimo** (`GoabSurveyNative`) — só modelo do aparelho, bundle id e versão do app — que se conecta via autolinking padrão do React Native (Turbo Native Module).
+
+- **Android**: nada a fazer além do passo 1. O autolinking do RN já inclui o módulo no próximo build nativo.
+- **iOS**: rode o `pod install` para linkar o módulo e gerar o código do Turbo Module:
+
+  ```bash
+  cd ios && pod install
+  ```
+
+- Depois de instalar (ou atualizar) o pacote, **rebuilde o app nativo** (`npx react-native run-android` / `run-ios`, ou gere o build novo no Xcode/Android Studio) — recarregar só o bundle JS não é suficiente para pegar um módulo nativo novo.
+
+:::note
+O bridge nativo é **opcional**: requer a New Architecture do React Native (padrão desde a 0.76). Se não estiver disponível — Expo Go, app ainda na Old Architecture, ou o `pod install`/build nativo não foi feito — o SDK **degrada automaticamente**, sem erro: `getDeviceInfo` cai para valores genéricos (`deviceModel: "ios-device"`/`"android-device"`, `packageName`/`versionName` vazios) e tudo o resto do SDK funciona normalmente.
+:::
+
+## 3. Criar a instância
 
 ```tsx
 import { SurveySdkFactory } from '@goab_ltda/survey-sdk-react-native';
@@ -37,7 +54,7 @@ const surveySdk = SurveySdkFactory.create({
 | `timeoutMillis` | number | Não | Timeout HTTP em milissegundos (padrão: 30 000) |
 | `storage` | `{ getItem, setItem, removeItem }` | Não | Armazenamento chave/valor; padrão: `AsyncStorage` (ex.: para usar MMKV, passe um adaptador com essa forma) |
 
-## 3. Montar o `<SurveyHost>`
+## 4. Montar o `<SurveyHost>`
 
 O SDK precisa de um [`<SurveyHost>`](api-reference#surveyhost) montado na árvore para apresentar pesquisas — é o equivalente ao `setPresentationHost` dos SDKs nativos:
 
@@ -67,7 +84,7 @@ export default function App() {
 
 Sem o `<SurveyHost>` montado, o SDK decide que há uma pesquisa elegível mas não tem onde exibi-la — nada aparece na tela (e um aviso é registrado no log).
 
-## 4. Enviar eventos de ativação
+## 5. Enviar eventos de ativação
 
 ```tsx
 // Tela visitada
@@ -85,7 +102,7 @@ surveySdk.sendEvent('purchase_completed', {
 
 Enquanto houver uma pesquisa ativa na tela, novos `sendEvent` são ignorados — a pesquisa corrente não é substituída.
 
-## 5. Usuário e atributos
+## 6. Usuário e atributos
 
 ```tsx
 surveySdk.setUserId('user_123');
@@ -98,7 +115,7 @@ surveySdk.setUserAttributes({
 
 Ao mudar o `userId`, pesquisas visíveis são fechadas e uma nova sessão analítica é iniciada.
 
-## 6. Observar eventos de pesquisa (opcional)
+## 7. Observar eventos de pesquisa (opcional)
 
 ```tsx
 import type { SurveyAnalyticsEvent } from '@goab_ltda/survey-sdk-react-native';
@@ -114,7 +131,7 @@ surveySdk.removeOnSurveyEventListener(listener);
 
 Veja [Eventos de Survey](./events) para a tipagem de `SurveyAnalyticsEvent`, a lista de tipos de evento e exemplos de uso.
 
-## 7. Fechar pesquisa visível
+## 8. Fechar pesquisa visível
 
 ```tsx
 surveySdk.disposeSurvey();
