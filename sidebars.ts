@@ -98,6 +98,23 @@ const sidebars: SidebarsConfig = {
             'ios-survey/api-reference',
           ],
         },
+        {
+          type: 'category',
+          label: 'React Native',
+          items: [
+            'react-native-survey/intro',
+            {
+              type: 'category',
+              label: 'Início Rápido',
+              items: [
+                'react-native-survey/getting-started',
+                'react-native-survey/initialization',
+              ],
+            },
+            'react-native-survey/events',
+            'react-native-survey/api-reference',
+          ],
+        },
       ],
     },
     {
