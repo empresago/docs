@@ -30,6 +30,23 @@ O SDK inclui um **módulo nativo mínimo** (`GoabSurveyNative`) — só modelo d
   cd ios && pod install
   ```
 
+  :::tip Deployment target do iOS
+  Algumas dependências transitivas (ex.: `@react-native-async-storage/async-storage`) ainda declaram `IPHONEOS_DEPLOYMENT_TARGET` abaixo de 15.0, que o Xcode atual não builda mais (`the range of supported deployment target versions is 15.0 to ...`). Se o seu `Podfile` ainda não eleva isso, adicione ao `post_install` do seu `target`:
+
+  ```ruby
+  post_install do |installer|
+    react_native_post_install(installer, config[:reactNativePath])
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |build_config|
+        atual = build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f
+        build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1' if atual < 15.1
+      end
+    end
+  end
+  ```
+  :::
+
 - Depois de instalar (ou atualizar) o pacote, **rebuilde o app nativo** (`npx react-native run-android` / `run-ios`, ou gere o build novo no Xcode/Android Studio) — recarregar só o bundle JS não é suficiente para pegar um módulo nativo novo.
 
 :::note
