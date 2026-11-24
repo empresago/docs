@@ -21,6 +21,16 @@ const GuiaList: GuiaItem[] = [
       </>
     ),
   },
+  {
+    title: 'Conectar o MCP',
+    to: '/conectar-mcp',
+    description: (
+      <>
+        Conecte o Claude Code à GoAB por OAuth: registre o servidor, faça login pelo navegador e
+        escolha quais contas e permissões o agente terá. Passo a passo com prints da tela real.
+      </>
+    ),
+  },
 ];
 
 export default function HomepageGuias(): ReactNode {
