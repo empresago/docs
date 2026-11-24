@@ -68,6 +68,15 @@ const config: Config = {
         sidebarPath: './sidebars-pesos-automaticos.ts',
       },
     ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'mcp-oauth',
+        path: 'mcp-oauth',
+        routeBasePath: 'conectar-mcp',
+        sidebarPath: './sidebars-mcp-oauth.ts',
+      },
+    ],
   ],
 
   themeConfig: {
@@ -95,6 +104,13 @@ const config: Config = {
           sidebarId: 'pesosAutomaticosSidebar',
           position: 'left',
           label: 'Pesos automáticos',
+        },
+        {
+          type: 'docSidebar',
+          docsPluginId: 'mcp-oauth',
+          sidebarId: 'mcpOauthSidebar',
+          position: 'left',
+          label: 'Conectar o MCP',
         },
         {
           type: 'html',
@@ -129,6 +145,10 @@ const config: Config = {
             {
               label: 'Pesos automáticos',
               to: '/pesos-automaticos',
+            },
+            {
+              label: 'Conectar o MCP',
+              to: '/conectar-mcp',
             },
           ],
         },
